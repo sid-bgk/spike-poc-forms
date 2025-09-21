@@ -1,0 +1,535 @@
+{
+  "metadata": {
+    "id": "simplified-application-poc",
+    "name": "Simplified Loan Application POC",
+    "version": "1.0.0",
+    "description": "POC demonstrating centralized form configuration with conditional steps",
+    "formType": "APPLICATION_FORM"
+  },
+  "steps": [
+    {
+      "id": "personal-info",
+      "name": "Personal Information",
+      "description": "Basic borrower information",
+      "order": 1,
+      "required": true,
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "name": "firstName",
+          "label": "First Name",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter your first name"
+            },
+            {
+              "rule": "minLength",
+              "value": 2,
+              "message": "First name must be at least 2 characters"
+            },
+            {
+              "rule": "maxLength",
+              "value": 50,
+              "message": "First name cannot exceed 50 characters"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "Enter your first name"
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "name": "lastName",
+          "label": "Last Name",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter your last name"
+            },
+            {
+              "rule": "minLength",
+              "value": 2,
+              "message": "Last name must be at least 2 characters"
+            },
+            {
+              "rule": "maxLength",
+              "value": 50,
+              "message": "Last name cannot exceed 50 characters"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "Enter your last name"
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "name": "email",
+          "label": "Email Address",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter your email address"
+            },
+            {
+              "rule": "email",
+              "message": "Please enter a valid email address"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "placeholder": "Enter your email address"
+        },
+        {
+          "id": "mobile",
+          "type": "phone",
+          "name": "mobile",
+          "label": "Mobile Number",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter your mobile number"
+            },
+            {
+              "rule": "phoneUS",
+              "message": "Please enter a valid US phone number"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "placeholder": "(555) 123-4567"
+        }
+      ]
+    },
+    {
+      "id": "property-info",
+      "name": "Property Information",
+      "description": "Current property details",
+      "order": 2,
+      "required": true,
+      "fields": [
+        {
+          "id": "propertyCity",
+          "type": "text",
+          "name": "propertyCity",
+          "label": "City",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the property city"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "placeholder": "Enter city"
+        },
+        {
+          "id": "propertyState",
+          "type": "dropdown",
+          "name": "propertyState",
+          "label": "State",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please select a state"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "options": [
+            { "value": "CA", "label": "California" },
+            { "value": "NY", "label": "New York" },
+            { "value": "TX", "label": "Texas" },
+            { "value": "FL", "label": "Florida" },
+            { "value": "IL", "label": "Illinois" },
+            { "value": "WA", "label": "Washington" }
+          ]
+        },
+        {
+          "id": "propertyZip",
+          "type": "text",
+          "name": "propertyZip",
+          "label": "ZIP Code",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter a ZIP code"
+            },
+            {
+              "rule": "zipCode",
+              "message": "Please enter a valid ZIP code"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "placeholder": "12345"
+        },
+        {
+          "id": "livedMoreThan2Years",
+          "type": "radio",
+          "name": "livedMoreThan2Years",
+          "label": "Have you lived here for more than 2 years?",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please select whether you have lived here for more than 2 years"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        },
+        {
+          "id": "previousAddressLabel",
+          "type": "label",
+          "name": "previousAddressLabel",
+          "text": "Previous Address",
+          "grid": { "xs": 12 },
+          "style": { "fontWeight": "bold", "marginTop": "16px", "marginBottom": "8px" },
+          "conditions": [
+            {
+              "===": [{"var": "livedMoreThan2Years"}, "no"]
+            }
+          ]
+        },
+        {
+          "id": "previousCity",
+          "type": "text",
+          "name": "previousCity",
+          "label": "Previous City",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "placeholder": "Enter previous city",
+          "conditions": [
+            {
+              "===": [{"var": "livedMoreThan2Years"}, "no"]
+            }
+          ]
+        },
+        {
+          "id": "previousState",
+          "type": "dropdown",
+          "name": "previousState",
+          "label": "Previous State",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "options": [
+            { "value": "CA", "label": "California" },
+            { "value": "NY", "label": "New York" },
+            { "value": "TX", "label": "Texas" },
+            { "value": "FL", "label": "Florida" },
+            { "value": "IL", "label": "Illinois" },
+            { "value": "WA", "label": "Washington" }
+          ],
+          "conditions": [
+            {
+              "===": [{"var": "livedMoreThan2Years"}, "no"]
+            }
+          ]
+        },
+        {
+          "id": "previousZip",
+          "type": "text",
+          "name": "previousZip",
+          "label": "Previous ZIP Code",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter a ZIP code"
+            },
+            {
+              "rule": "zipCode",
+              "message": "Please enter a valid ZIP code"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "placeholder": "12345",
+          "conditions": [
+            {
+              "===": [{"var": "livedMoreThan2Years"}, "no"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "account-type",
+      "name": "Account Type",
+      "description": "Application type selection",
+      "order": 3,
+      "required": true,
+      "fields": [
+        {
+          "id": "applicationType",
+          "type": "radio",
+          "name": "applicationType",
+          "label": "Application Type",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "individual", "label": "Individual" },
+            { "value": "joint", "label": "Joint" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "joint-property-info",
+      "name": "Joint Property Information",
+      "description": "Co-borrower property details",
+      "order": 4,
+      "required": false,
+      "conditions": [
+        {
+          "===": [{"var": "applicationType"}, "joint"]
+        }
+      ],
+      "fields": [
+        {
+          "id": "jointPropertyCity",
+          "type": "text",
+          "name": "jointPropertyCity",
+          "label": "Co-borrower City",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "placeholder": "Enter co-borrower city"
+        },
+        {
+          "id": "jointPropertyState",
+          "type": "dropdown",
+          "name": "jointPropertyState",
+          "label": "Co-borrower State",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "options": [
+            { "value": "CA", "label": "California" },
+            { "value": "NY", "label": "New York" },
+            { "value": "TX", "label": "Texas" },
+            { "value": "FL", "label": "Florida" },
+            { "value": "IL", "label": "Illinois" },
+            { "value": "WA", "label": "Washington" }
+          ]
+        },
+        {
+          "id": "jointPropertyZip",
+          "type": "text",
+          "name": "jointPropertyZip",
+          "label": "Co-borrower ZIP Code",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter a ZIP code"
+            },
+            {
+              "rule": "zipCode",
+              "message": "Please enter a valid ZIP code"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "placeholder": "12345"
+        },
+        {
+          "id": "jointLivedMoreThan2Years",
+          "type": "radio",
+          "name": "jointLivedMoreThan2Years",
+          "label": "Has co-borrower lived here for more than 2 years?",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        },
+        {
+          "id": "jointPreviousAddressLabel",
+          "type": "label",
+          "name": "jointPreviousAddressLabel",
+          "text": "Co-borrower Previous Address",
+          "grid": { "xs": 12 },
+          "style": { "fontWeight": "bold", "marginTop": "16px", "marginBottom": "8px" },
+          "conditions": [
+            {
+              "===": [{"var": "jointLivedMoreThan2Years"}, "no"]
+            }
+          ]
+        },
+        {
+          "id": "jointPreviousCity",
+          "type": "text",
+          "name": "jointPreviousCity",
+          "label": "Co-borrower Previous City",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "placeholder": "Enter co-borrower previous city",
+          "conditions": [
+            {
+              "===": [{"var": "jointLivedMoreThan2Years"}, "no"]
+            }
+          ]
+        },
+        {
+          "id": "jointPreviousState",
+          "type": "dropdown",
+          "name": "jointPreviousState",
+          "label": "Co-borrower Previous State",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "options": [
+            { "value": "CA", "label": "California" },
+            { "value": "NY", "label": "New York" },
+            { "value": "TX", "label": "Texas" },
+            { "value": "FL", "label": "Florida" },
+            { "value": "IL", "label": "Illinois" },
+            { "value": "WA", "label": "Washington" }
+          ],
+          "conditions": [
+            {
+              "===": [{"var": "jointLivedMoreThan2Years"}, "no"]
+            }
+          ]
+        },
+        {
+          "id": "jointPreviousZip",
+          "type": "text",
+          "name": "jointPreviousZip",
+          "label": "Co-borrower Previous ZIP Code",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter a ZIP code"
+            },
+            {
+              "rule": "zipCode",
+              "message": "Please enter a valid ZIP code"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 4 },
+          "placeholder": "12345",
+          "conditions": [
+            {
+              "===": [{"var": "jointLivedMoreThan2Years"}, "no"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "type": "stepped",
+    "allowBackward": true,
+    "allowSkipping": false,
+    "showProgress": true,
+    "completionRequired": true
+  },
+  "validation": {
+    "globalRules": [
+      {
+        "type": "crossField",
+        "fields": ["email", "mobile"],
+        "rule": "unique",
+        "message": "Email and mobile must be unique across all applicants"
+      }
+    ]
+  },
+  "transformations": {
+    "inbound": {
+      "borrower.personal.firstName": "firstName",
+      "borrower.personal.lastName": "lastName",
+      "borrower.personal.email": "email",
+      "borrower.personal.mobile": "mobile",
+      "property.current.city": "propertyCity",
+      "property.current.state": "propertyState",
+      "property.current.zip": "propertyZip",
+      "property.residencyInfo.livedMoreThan2Years": "livedMoreThan2Years",
+      "property.previous.city": "previousCity",
+      "property.previous.state": "previousState",
+      "property.previous.zip": "previousZip",
+      "application.type": "applicationType",
+      "jointBorrower.property.current.city": "jointPropertyCity",
+      "jointBorrower.property.current.state": "jointPropertyState",
+      "jointBorrower.property.current.zip": "jointPropertyZip",
+      "jointBorrower.property.residencyInfo.livedMoreThan2Years": "jointLivedMoreThan2Years",
+      "jointBorrower.property.previous.city": "jointPreviousCity",
+      "jointBorrower.property.previous.state": "jointPreviousState",
+      "jointBorrower.property.previous.zip": "jointPreviousZip"
+    },
+    "outbound": {
+      "firstName": "borrower.personal.firstName",
+      "lastName": "borrower.personal.lastName",
+      "email": "borrower.personal.email",
+      "mobile": "borrower.personal.mobile",
+      "propertyCity": "property.current.city",
+      "propertyState": "property.current.state",
+      "propertyZip": "property.current.zip",
+      "livedMoreThan2Years": "property.residencyInfo.livedMoreThan2Years",
+      "previousCity": "property.previous.city",
+      "previousState": "property.previous.state",
+      "previousZip": "property.previous.zip",
+      "applicationType": "application.type",
+      "jointPropertyCity": "jointBorrower.property.current.city",
+      "jointPropertyState": "jointBorrower.property.current.state",
+      "jointPropertyZip": "jointBorrower.property.current.zip",
+      "jointLivedMoreThan2Years": "jointBorrower.property.residencyInfo.livedMoreThan2Years",
+      "jointPreviousCity": "jointBorrower.property.previous.city",
+      "jointPreviousState": "jointBorrower.property.previous.state",
+      "jointPreviousZip": "jointBorrower.property.previous.zip"
+    }
+  }
+}

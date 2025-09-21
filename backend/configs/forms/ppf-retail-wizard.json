@@ -1,0 +1,1267 @@
+{
+  "metadata": {
+    "id": "ppf-retail-wizard",
+    "name": "PPF Retail Wizard Flow",
+    "version": "1.0.0",
+    "description": "Park Place Finance retail flow with question wizard followed by traditional steps",
+    "formType": "WIZARD_FLOW_FORM"
+  },
+  "flowPhases": {
+    "phase1": {
+      "id": "loan-type-selection",
+      "name": "Loan Type Selection",
+      "type": "selection",
+      "description": "Choose your loan program"
+    },
+    "phase2": {
+      "id": "question-wizard",
+      "name": "Question Wizard",
+      "type": "wizard",
+      "description": "Quick qualifying questions - one at a time"
+    },
+    "phase3": {
+      "id": "traditional-steps",
+      "name": "Traditional Form Steps",
+      "type": "traditional",
+      "description": "Complete application with pre-filled data"
+    }
+  },
+  "steps": [
+    {
+      "id": "loan-program-selection",
+      "name": "Choose Your Loan Program",
+      "description": "Select the type of loan you want to apply for",
+      "phase": "phase1",
+      "order": 1,
+      "stepType": "selection",
+      "required": true,
+      "hideContinueButton": true,
+      "fields": [
+        {
+          "id": "loanTypeName",
+          "type": "optionsCards",
+          "name": "loanTypeName",
+          "label": "Choose Your Loan Program",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "buttonLabel": "Price",
+          "options": [
+            {
+              "value": "debt-service-coverage-ratio",
+              "label": "DSCR",
+              "title": "Debt Service Coverage Ratio",
+              "description": "Investment property loan based on rental income",
+              "icon": "investment"
+            },
+            {
+              "value": "residential-transition-loan",
+              "label": "RTL",
+              "title": "Residential Transition Loan",
+              "description": "Fix & flip, fix & hold, bridge loans",
+              "icon": "construction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "loan-purpose-question",
+      "name": "Loan Purpose",
+      "description": "What is the purpose of your loan?",
+      "phase": "phase2",
+      "order": 2,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "fields": [
+        {
+          "id": "loanPurpose",
+          "type": "options",
+          "name": "loanPurpose",
+          "label": "Loan Purpose",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "purchase", "label": "Purchase" },
+            { "value": "refinance_rate_and_term", "label": "Refinance Rate-And-Term" },
+            { "value": "refinance_cashout", "label": "Refinance Cashout" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "property-type-question",
+      "name": "Property Type",
+      "description": "What type of property are you financing?",
+      "phase": "phase2",
+      "order": 3,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "fields": [
+        {
+          "id": "propertyType",
+          "type": "options",
+          "name": "propertyType",
+          "label": "Select a Property Type",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "single_family_residence", "label": "Single Family Residence" },
+            { "value": "2_4_unit", "label": "2-4 Units" },
+            { "value": "condominium", "label": "Condominium" },
+            { "value": "non_warrantable_condo", "label": "Non-Warrantable Condo" },
+            { "value": "condotel", "label": "Condotel" },
+            { "value": "pud", "label": "PUD" },
+            { "value": "townhome", "label": "Townhome" },
+            { "value": "other", "label": "Other" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "property-state-question",
+      "name": "Property Location",
+      "description": "Where is your property located?",
+      "phase": "phase2",
+      "order": 4,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "fields": [
+        {
+          "id": "propertyState",
+          "type": "dropdown",
+          "name": "propertyState",
+          "label": "State",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "CA", "label": "California" },
+            { "value": "NY", "label": "New York" },
+            { "value": "TX", "label": "Texas" },
+            { "value": "FL", "label": "Florida" },
+            { "value": "IL", "label": "Illinois" },
+            { "value": "WA", "label": "Washington" },
+            { "value": "AZ", "label": "Arizona" },
+            { "value": "CO", "label": "Colorado" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "credit-score-question",
+      "name": "Credit Score Range",
+      "description": "What is your estimated credit score?",
+      "phase": "phase2",
+      "order": 5,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "fields": [
+        {
+          "id": "estimatedCreditScore",
+          "type": "options",
+          "name": "estimatedCreditScore",
+          "label": "What is your credit score range?",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please select your credit score range"
+            },
+            {
+              "rule": "minCreditScore",
+              "value": 660,
+              "message": "We require a minimum credit score of 660"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "760+", "label": "760+" },
+            { "value": "740-759", "label": "740-759" },
+            { "value": "720-739", "label": "720-739" },
+            { "value": "700-719", "label": "700-719" },
+            { "value": "680-699", "label": "680-699" },
+            { "value": "660-679", "label": "660-679" },
+            { "value": "<660", "label": "Less than 660 (Not Eligible)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "property-value-question",
+      "name": "Property Value",
+      "description": "What is the estimated value or purchase price?",
+      "phase": "phase2",
+      "order": 6,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "fields": [
+        {
+          "id": "propertyValue",
+          "type": "currency",
+          "name": "propertyValue",
+          "label": "Property Value",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the property value"
+            },
+            {
+              "rule": "min",
+              "value": 75000,
+              "message": "Property value must be at least $75,000"
+            },
+            {
+              "rule": "max",
+              "value": 5000000,
+              "message": "Property value cannot exceed $5,000,000"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "placeholder": "$500,000",
+          "helperText": "Purchase Price or Estimated Value",
+          "inputProps": {
+            "startAdornment": "$"
+          }
+        }
+      ]
+    },
+    {
+      "id": "rental-use-question",
+      "name": "Rental Type",
+      "description": "How will the property be rented?",
+      "phase": "phase2",
+      "order": 7,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "conditions": [
+        {
+          "===": [{"var": "loanTypeName"}, "debt-service-coverage-ratio"]
+        }
+      ],
+      "fields": [
+        {
+          "id": "rentalUse",
+          "type": "options",
+          "name": "rentalUse",
+          "label": "What is the rental type?",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "long_term", "label": "Long Term Rental" },
+            { "value": "short_term", "label": "Short Term Rental (Airbnb)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "loan-type-rtl-question",
+      "name": "RTL Loan Type",
+      "description": "What type of RTL loan do you need?",
+      "phase": "phase2",
+      "order": 7,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "conditions": [
+        {
+          "===": [{"var": "loanTypeName"}, "residential-transition-loan"]
+        }
+      ],
+      "fields": [
+        {
+          "id": "rtlLoanType",
+          "type": "options",
+          "name": "rtlLoanType",
+          "label": "Loan Type",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "fix_and_flip", "label": "Fix and Flip" },
+            { "value": "fix_and_hold", "label": "Fix and Hold" },
+            { "value": "bridge_loan", "label": "Bridge Loan" },
+            { "value": "ground_up_construction", "label": "Ground Up Construction" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects-completed-question",
+      "name": "Experience Level",
+      "description": "How many projects have you completed?",
+      "phase": "phase2",
+      "order": 8,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "conditions": [
+        {
+          "===": [{"var": "loanTypeName"}, "residential-transition-loan"]
+        }
+      ],
+      "fields": [
+        {
+          "id": "projectsCompletedInPast36Months",
+          "type": "dropdown",
+          "name": "projectsCompletedInPast36Months",
+          "label": "Projects Completed in Past 36 Months",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "0", "label": "0" },
+            { "value": "1", "label": "1" },
+            { "value": "2", "label": "2" },
+            { "value": "3", "label": "3" },
+            { "value": "4", "label": "4" },
+            { "value": "5", "label": "5" },
+            { "value": "6", "label": "6" },
+            { "value": "7", "label": "7" },
+            { "value": "8", "label": "8" },
+            { "value": "9", "label": "9" },
+            { "value": "10+", "label": "10+" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "citizenship-question",
+      "name": "Residency Status",
+      "description": "What is your residency status?",
+      "phase": "phase2",
+      "order": 9,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "fields": [
+        {
+          "id": "citizenship",
+          "type": "options",
+          "name": "citizenship",
+          "label": "Residency Status",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "options": [
+            { "value": "us_citizen", "label": "U.S. Citizen" },
+            { "value": "permanent_resident_alien", "label": "Permanent Resident Alien" },
+            { "value": "non_permanent_resident_alien", "label": "Non-Permanent Resident Alien" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "purchase-price-question",
+      "name": "Purchase Price",
+      "description": "What is the purchase price?",
+      "phase": "phase2",
+      "order": 10,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "conditions": [
+        {
+          "===": [{"var": "loanPurpose"}, "purchase"]
+        }
+      ],
+      "fields": [
+        {
+          "id": "purchasePrice",
+          "type": "currency",
+          "name": "purchasePrice",
+          "label": "Purchase Price",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the amount"
+            },
+            {
+              "rule": "min",
+              "value": 50000,
+              "message": "Amount must be at least $50,000"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "placeholder": "$400,000",
+          "inputProps": {
+            "startAdornment": "$"
+          }
+        }
+      ]
+    },
+    {
+      "id": "outstanding-balance-question",
+      "name": "Outstanding Loan Balance",
+      "description": "What is the current loan balance?",
+      "phase": "phase2",
+      "order": 11,
+      "stepType": "question",
+      "category": "Qualifying Information",
+      "showPricer": true,
+      "required": true,
+      "conditions": [
+        {
+          "or": [
+            {"===": [{"var": "loanPurpose"}, "refinance_rate_and_term"]},
+            {"===": [{"var": "loanPurpose"}, "refinance_cashout"]}
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "id": "outstandingLoanBalance",
+          "type": "currency",
+          "name": "outstandingLoanBalance",
+          "label": "Outstanding Loan Balance on Property",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the amount"
+            },
+            {
+              "rule": "min",
+              "value": 0,
+              "message": "Amount cannot be negative"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "placeholder": "$200,000",
+          "inputProps": {
+            "startAdornment": "$"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qualifying-information-summary",
+      "name": "Qualifying Information",
+      "description": "Review and update your qualifying information",
+      "phase": "phase3",
+      "order": 12,
+      "stepType": "traditional",
+      "category": "Application Details",
+      "showPricer": true,
+      "required": true,
+      "fields": [
+        {
+          "id": "qualifyingInfoHeader",
+          "type": "label",
+          "name": "qualifyingInfoHeader",
+          "text": "Qualifying Information Summary",
+          "grid": { "xs": 12 },
+          "style": { "fontWeight": "bold", "fontSize": "18px", "marginBottom": "16px" }
+        },
+        {
+          "id": "loanPurposeDisplay",
+          "type": "dropdown",
+          "name": "loanPurpose",
+          "label": "Loan Purpose",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "loanPurpose",
+          "options": [
+            { "value": "purchase", "label": "Purchase" },
+            { "value": "refinance_rate_and_term", "label": "Refinance Rate-And-Term" },
+            { "value": "refinance_cashout", "label": "Refinance Cashout" }
+          ]
+        },
+        {
+          "id": "propertyTypeDisplay",
+          "type": "dropdown",
+          "name": "propertyType",
+          "label": "Property Type",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "propertyType",
+          "options": [
+            { "value": "single_family_residence", "label": "Single Family Residence" },
+            { "value": "2_4_unit", "label": "2-4 Units" },
+            { "value": "condominium", "label": "Condominium" },
+            { "value": "non_warrantable_condo", "label": "Non-Warrantable Condo" },
+            { "value": "condotel", "label": "Condotel" },
+            { "value": "pud", "label": "PUD" },
+            { "value": "townhome", "label": "Townhome" },
+            { "value": "other", "label": "Other" }
+          ]
+        },
+        {
+          "id": "propertyStateDisplay",
+          "type": "dropdown",
+          "name": "propertyState",
+          "label": "Property State",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "propertyState",
+          "options": [
+            { "value": "CA", "label": "California" },
+            { "value": "NY", "label": "New York" },
+            { "value": "TX", "label": "Texas" },
+            { "value": "FL", "label": "Florida" },
+            { "value": "IL", "label": "Illinois" },
+            { "value": "WA", "label": "Washington" },
+            { "value": "AZ", "label": "Arizona" },
+            { "value": "CO", "label": "Colorado" }
+          ]
+        },
+        {
+          "id": "estimatedCreditScoreDisplay",
+          "type": "dropdown",
+          "name": "estimatedCreditScore",
+          "label": "Estimated Credit Score",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "estimatedCreditScore",
+          "options": [
+            { "value": "760+", "label": "760+" },
+            { "value": "740-759", "label": "740-759" },
+            { "value": "720-739", "label": "720-739" },
+            { "value": "700-719", "label": "700-719" },
+            { "value": "680-699", "label": "680-699" },
+            { "value": "660-679", "label": "660-679" }
+          ]
+        },
+        {
+          "id": "propertyValueDisplay",
+          "type": "currency",
+          "name": "propertyValue",
+          "label": "Property Value",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the purchase price"
+            },
+            {
+              "rule": "min",
+              "value": 75000,
+              "message": "Purchase price must be at least $75,000"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "propertyValue",
+          "helperText": "Appraised or Estimated Value",
+          "inputProps": {
+            "startAdornment": "$"
+          }
+        },
+        {
+          "id": "citizenshipDisplay",
+          "type": "dropdown",
+          "name": "citizenship",
+          "label": "Citizenship",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "citizenship",
+          "options": [
+            { "value": "us_citizen", "label": "U.S. Citizen" },
+            { "value": "permanent_resident_alien", "label": "Permanent Resident Alien" },
+            { "value": "non_permanent_resident_alien", "label": "Non-Permanent Resident Alien" }
+          ]
+        },
+        {
+          "id": "rentalUseDisplay",
+          "type": "dropdown",
+          "name": "rentalUse",
+          "label": "Rental Use",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "rentalUse",
+          "conditions": [
+            {
+              "===": [{"var": "loanTypeName"}, "debt-service-coverage-ratio"]
+            }
+          ],
+          "options": [
+            { "value": "long_term", "label": "Long Term Rental" },
+            { "value": "short_term", "label": "Short Term Rental (Airbnb)" }
+          ]
+        },
+        {
+          "id": "rtlLoanTypeDisplay",
+          "type": "dropdown",
+          "name": "rtlLoanType",
+          "label": "RTL Loan Type",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "rtlLoanType",
+          "conditions": [
+            {
+              "===": [{"var": "loanTypeName"}, "residential-transition-loan"]
+            }
+          ],
+          "options": [
+            { "value": "fix_and_flip", "label": "Fix and Flip" },
+            { "value": "fix_and_hold", "label": "Fix and Hold" },
+            { "value": "bridge_loan", "label": "Bridge Loan" },
+            { "value": "ground_up_construction", "label": "Ground Up Construction" }
+          ]
+        },
+        {
+          "id": "projectsCompletedDisplay",
+          "type": "dropdown",
+          "name": "projectsCompletedInPast36Months",
+          "label": "Projects Completed (36 Months)",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "projectsCompletedInPast36Months",
+          "conditions": [
+            {
+              "===": [{"var": "loanTypeName"}, "residential-transition-loan"]
+            }
+          ],
+          "options": [
+            { "value": "0", "label": "0" },
+            { "value": "1", "label": "1" },
+            { "value": "2", "label": "2" },
+            { "value": "3", "label": "3" },
+            { "value": "4", "label": "4" },
+            { "value": "5", "label": "5" },
+            { "value": "6", "label": "6" },
+            { "value": "7", "label": "7" },
+            { "value": "8", "label": "8" },
+            { "value": "9", "label": "9" },
+            { "value": "10+", "label": "10+" }
+          ]
+        },
+        {
+          "id": "purchasePriceDisplay",
+          "type": "currency",
+          "name": "purchasePrice",
+          "label": "Purchase Price",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the amount"
+            },
+            {
+              "rule": "min",
+              "value": 50000,
+              "message": "Amount must be at least $50,000"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "purchasePrice",
+          "conditions": [
+            {
+              "===": [{"var": "loanPurpose"}, "purchase"]
+            }
+          ],
+          "inputProps": {
+            "startAdornment": "$"
+          }
+        },
+        {
+          "id": "outstandingLoanBalanceDisplay",
+          "type": "currency",
+          "name": "outstandingLoanBalance",
+          "label": "Outstanding Loan Balance",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the amount"
+            },
+            {
+              "rule": "min",
+              "value": 0,
+              "message": "Amount cannot be negative"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "prefillFrom": "outstandingLoanBalance",
+          "conditions": [
+            {
+              "or": [
+                {"===": [{"var": "loanPurpose"}, "refinance_rate_and_term"]},
+                {"===": [{"var": "loanPurpose"}, "refinance_cashout"]}
+              ]
+            }
+          ],
+          "inputProps": {
+            "startAdornment": "$"
+          }
+        },
+        {
+          "id": "lienPosition",
+          "type": "hidden",
+          "name": "lienPosition",
+          "defaultValue": "first_lien"
+        }
+      ]
+    },
+    {
+      "id": "property-information",
+      "name": "Property Information",
+      "description": "Detailed property information",
+      "phase": "phase3",
+      "order": 13,
+      "stepType": "traditional",
+      "category": "Property Details",
+      "required": true,
+      "fields": [
+        {
+          "id": "propertyInfoHeader",
+          "type": "label",
+          "name": "propertyInfoHeader",
+          "text": "Property Information",
+          "grid": { "xs": 12 },
+          "style": { "fontWeight": "bold", "fontSize": "18px", "marginBottom": "16px" }
+        },
+        {
+          "id": "propertyStreet",
+          "type": "text",
+          "name": "propertyStreet",
+          "label": "Street Address",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "placeholder": "123 Main Street"
+        },
+        {
+          "id": "propertyApartmentNumber",
+          "type": "text",
+          "name": "propertyApartmentNumber",
+          "label": "Apt or Unit #",
+          "required": false,
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "Apt 2B"
+        },
+        {
+          "id": "propertyCity",
+          "type": "text",
+          "name": "propertyCity",
+          "label": "City",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "Los Angeles"
+        },
+        {
+          "id": "propertyZip",
+          "type": "text",
+          "name": "propertyZip",
+          "label": "ZIP Code",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter a ZIP code"
+            },
+            {
+              "rule": "zipCode",
+              "message": "Please enter a valid ZIP code"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "90210"
+        },
+        {
+          "id": "numberOfUnits",
+          "type": "dropdown",
+          "name": "numberOfUnits",
+          "label": "Number of Units",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "defaultValue": 1,
+          "options": [
+            { "value": 1, "label": "1" },
+            { "value": 2, "label": "2" },
+            { "value": 3, "label": "3" },
+            { "value": 4, "label": "4" }
+          ]
+        },
+        {
+          "id": "minimumYearlyGrossRentalIncome",
+          "type": "currency",
+          "name": "minimumYearlyGrossRentalIncome",
+          "label": "Minimum Yearly Gross Rental Income",
+          "required": false,
+          "grid": { "xs": 12, "sm": 6 },
+          "conditions": [
+            {
+              "===": [{"var": "loanTypeName"}, "residential-transition-loan"]
+            }
+          ],
+          "inputProps": {
+            "startAdornment": "$"
+          }
+        }
+      ]
+    },
+    {
+      "id": "borrower-information",
+      "name": "Borrower Information",
+      "description": "Primary borrower details",
+      "phase": "phase3",
+      "order": 14,
+      "stepType": "traditional",
+      "category": "Borrower Details",
+      "required": true,
+      "fields": [
+        {
+          "id": "borrowerInfoHeader",
+          "type": "label",
+          "name": "borrowerInfoHeader",
+          "text": "Borrower Information",
+          "grid": { "xs": 12 },
+          "style": { "fontWeight": "bold", "fontSize": "18px", "marginBottom": "16px" }
+        },
+        {
+          "id": "firstName",
+          "type": "text",
+          "name": "firstName",
+          "label": "First Name",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            },
+            {
+              "rule": "minLength",
+              "value": 2,
+              "message": "Name must be at least 2 characters"
+            },
+            {
+              "rule": "maxLength",
+              "value": 50,
+              "message": "Name cannot exceed 50 characters"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "John"
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "name": "lastName",
+          "label": "Last Name",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            },
+            {
+              "rule": "minLength",
+              "value": 2,
+              "message": "Name must be at least 2 characters"
+            },
+            {
+              "rule": "maxLength",
+              "value": 50,
+              "message": "Name cannot exceed 50 characters"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "Doe"
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "name": "email",
+          "label": "Email Address",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter your email address"
+            },
+            {
+              "rule": "email",
+              "message": "Please enter a valid email address"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "placeholder": "john.doe@example.com"
+        },
+        {
+          "id": "phone",
+          "type": "phone",
+          "name": "phone",
+          "label": "Phone Number",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter your phone number"
+            },
+            {
+              "rule": "phoneUS",
+              "message": "Please enter a valid US phone number"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "(555) 123-4567"
+        },
+        {
+          "id": "dateOfBirth",
+          "type": "date",
+          "name": "dateOfBirth",
+          "label": "Date of Birth",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter your age"
+            },
+            {
+              "rule": "minAge",
+              "value": 18,
+              "message": "You must be at least 18 years old"
+            },
+            {
+              "rule": "maxAge",
+              "value": 150,
+              "message": "Please enter a valid age"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 }
+        },
+        {
+          "id": "ssn",
+          "type": "password",
+          "name": "ssn",
+          "label": "Social Security Number",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter your Social Security Number"
+            },
+            {
+              "rule": "ssnFormat",
+              "message": "Please enter a valid SSN (XXX-XX-XXXX)"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "123-45-6789",
+          "helperText": "9 digits only"
+        },
+        {
+          "id": "guarantorEntity",
+          "type": "text",
+          "name": "guarantorEntity",
+          "label": "Guarantor/Entity Name",
+          "required": false,
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "ABC Company LLC"
+        },
+        {
+          "id": "currentAddressHeader",
+          "type": "label",
+          "name": "currentAddressHeader",
+          "text": "Current Address",
+          "grid": { "xs": 12 },
+          "style": { "fontWeight": "bold", "fontSize": "16px", "marginTop": "24px", "marginBottom": "8px" }
+        },
+        {
+          "id": "borrowerStreet",
+          "type": "text",
+          "name": "borrowerStreet",
+          "label": "Street Address",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12 },
+          "placeholder": "456 Oak Avenue"
+        },
+        {
+          "id": "borrowerApartmentNumber",
+          "type": "text",
+          "name": "borrowerApartmentNumber",
+          "label": "Apt or Unit #",
+          "required": false,
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "Unit 5"
+        },
+        {
+          "id": "borrowerCity",
+          "type": "text",
+          "name": "borrowerCity",
+          "label": "City",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "San Francisco"
+        },
+        {
+          "id": "borrowerState",
+          "type": "dropdown",
+          "name": "borrowerState",
+          "label": "State",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "This field is required"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "options": [
+            { "value": "CA", "label": "California" },
+            { "value": "NY", "label": "New York" },
+            { "value": "TX", "label": "Texas" },
+            { "value": "FL", "label": "Florida" },
+            { "value": "IL", "label": "Illinois" },
+            { "value": "WA", "label": "Washington" },
+            { "value": "AZ", "label": "Arizona" },
+            { "value": "CO", "label": "Colorado" }
+          ]
+        },
+        {
+          "id": "borrowerZip",
+          "type": "text",
+          "name": "borrowerZip",
+          "label": "ZIP Code",
+          "required": true,
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter a ZIP code"
+            },
+            {
+              "rule": "zipCode",
+              "message": "Please enter a valid ZIP code"
+            }
+          ],
+          "grid": { "xs": 12, "sm": 6 },
+          "placeholder": "94102"
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "type": "wizard",
+    "allowBackward": true,
+    "allowSkipping": false,
+    "showProgress": true,
+    "completionRequired": true,
+    "phaseNavigation": {
+      "allowPhaseSkipping": false,
+      "showPhaseProgress": true
+    }
+  },
+  "validation": {
+    "globalRules": [
+      {
+        "type": "creditScoreValidation",
+        "field": "estimatedCreditScore",
+        "rule": "minCreditScore",
+        "value": "660",
+        "message": "Unfortunately we require a 660+ credit score"
+      }
+    ]
+  },
+  "transformations": {
+    "prefillMappings": {
+      "loanPurpose": "loanPurpose",
+      "propertyType": "propertyType",
+      "propertyState": "propertyState",
+      "estimatedCreditScore": "estimatedCreditScore",
+      "propertyValue": "propertyValue",
+      "citizenship": "citizenship",
+      "rentalUse": "rentalUse",
+      "rtlLoanType": "rtlLoanType",
+      "projectsCompletedInPast36Months": "projectsCompletedInPast36Months",
+      "purchasePrice": "purchasePrice",
+      "outstandingLoanBalance": "outstandingLoanBalance"
+    },
+    "outbound": {
+      "loanTypeName": "loan.program.type",
+      "loanPurpose": "loan.purpose",
+      "propertyType": "property.type",
+      "propertyState": "property.address.state",
+      "propertyCity": "property.address.city",
+      "propertyStreet": "property.address.street",
+      "propertyZip": "property.address.zip",
+      "propertyValue": "property.valuation.estimatedValue",
+      "purchasePrice": "property.valuation.purchasePrice",
+      "outstandingLoanBalance": "loan.existing.balance",
+      "estimatedCreditScore": "borrower.credit.estimatedScore",
+      "citizenship": "borrower.personal.citizenship",
+      "firstName": "borrower.personal.firstName",
+      "lastName": "borrower.personal.lastName",
+      "email": "borrower.personal.email",
+      "phone": "borrower.personal.phone",
+      "dateOfBirth": "borrower.personal.dateOfBirth",
+      "ssn": "borrower.personal.ssn",
+      "borrowerStreet": "borrower.address.street",
+      "borrowerCity": "borrower.address.city",
+      "borrowerState": "borrower.address.state",
+      "borrowerZip": "borrower.address.zip"
+    },
+    "inbound": {
+      "loan.program.type": "loanTypeName",
+      "loan.purpose": "loanPurpose",
+      "property.type": "propertyType",
+      "property.address.state": "propertyState",
+      "property.address.city": "propertyCity",
+      "property.address.street": "propertyStreet",
+      "property.address.zip": "propertyZip",
+      "property.valuation.estimatedValue": "propertyValue",
+      "property.valuation.purchasePrice": "purchasePrice",
+      "loan.existing.balance": "outstandingLoanBalance",
+      "borrower.credit.estimatedScore": "estimatedCreditScore",
+      "borrower.personal.citizenship": "citizenship",
+      "borrower.personal.firstName": "firstName",
+      "borrower.personal.lastName": "lastName",
+      "borrower.personal.email": "email",
+      "borrower.personal.phone": "phone",
+      "borrower.personal.dateOfBirth": "dateOfBirth",
+      "borrower.personal.ssn": "ssn",
+      "borrower.address.street": "borrowerStreet",
+      "borrower.address.city": "borrowerCity",
+      "borrower.address.state": "borrowerState",
+      "borrower.address.zip": "borrowerZip"
+    }
+  },
+  "wizardFlow": {
+    "enablePrefillPropagation": true,
+    "questionStepType": "question",
+    "traditionalStepType": "traditional",
+    "selectionStepType": "selection",
+    "phases": ["phase1", "phase2", "phase3"],
+    "pricingIntegration": {
+      "showPricingOnQuestions": true,
+      "pricingSteps": ["phase2", "phase3"]
+    }
+  }
+}
