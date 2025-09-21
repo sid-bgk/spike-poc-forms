@@ -19,10 +19,10 @@ function parseCurrencyToNumber(input: unknown): number | null {
 export function createZodFieldValidator(validationRules: ValidationRule[] = [], fieldType: string = 'text'): FieldValidator {
   // Special case: checkbox → boolean with required enforcement only
   if (fieldType === 'checkbox') {
-    const hasRequired = validationRules.some((r) => r === 'required')
+    const requiredRule = validationRules.find(r => r.rule === 'required')
     const schema = z.boolean().superRefine((val, ctx) => {
-      if (hasRequired && val !== true) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'This field is required' })
+      if (requiredRule && val !== true) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: requiredRule.message })
       }
     })
     return ({ value }) => {
@@ -36,23 +36,28 @@ export function createZodFieldValidator(validationRules: ValidationRule[] = [], 
   const rules = validationRules
   const schema = z.any().superRefine((raw, ctx) => {
     const v = raw == null ? '' : String(raw)
-    const hasRequired = rules.some((r) => r === 'required')
-    if (hasRequired && v.trim().length === 0) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'This field is required' })
+    const requiredRule = rules.find(r => r.rule === 'required')
+
+    if (requiredRule && v.trim().length === 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: requiredRule.message })
       return
     }
 
     // If empty and not required, skip remaining checks
-    if (!hasRequired && (v === '' || v == null)) return
+    if (!requiredRule && (v === '' || v == null)) return
 
     for (const rule of rules) {
-      switch (typeof rule === 'string' ? rule : (Object.keys(rule)[0] as string)) {
+      const { rule: ruleName, value: ruleValue, message } = rule
+
+      switch (ruleName) {
         case 'required':
           // already handled
           break
         case 'email': {
           const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-          if (!emailRe.test(v)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please enter a valid email address' })
+          if (!emailRe.test(v)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
           break
         }
         case 'phoneUS': {
@@ -60,47 +65,113 @@ export function createZodFieldValidator(validationRules: ValidationRule[] = [], 
           if (!formatted.test(v)) {
             const digits = v.replace(/\D/g, '')
             if (digits.length !== 10) {
-              ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please enter a valid US phone number (e.g., (555) 123-4567)' })
+              ctx.addIssue({ code: z.ZodIssueCode.custom, message })
             }
           }
           break
         }
+        case 'zipCode':
         case 'zipCodeUS': {
           const zipRe = /^\d{5}(-\d{4})?$/
-          if (!zipRe.test(v)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please enter a valid ZIP code (e.g., 12345 or 12345-6789)' })
+          if (!zipRe.test(v)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
           break
         }
         case 'currency': {
           const num = parseCurrencyToNumber(v)
-          if (num == null || num < 0) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please enter a valid amount' })
-          break
-        }
-        case 'date': {
-          if (!isValidDate(v)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please enter a valid date' })
-          break
-        }
-        default: {
-          if (typeof rule === 'object') {
-            if ('minLength' in rule) {
-              if (v.length < (rule as any).minLength) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `Must be at least ${(rule as any).minLength} characters` })
-            } else if ('maxLength' in rule) {
-              if (v.length > (rule as any).maxLength) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `Must be no more than ${(rule as any).maxLength} characters` })
-            } else if ('min' in rule) {
-              const num = Number(v)
-              if (isNaN(num) || num < (rule as any).min) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `Must be at least ${(rule as any).min}` })
-            } else if ('max' in rule) {
-              const num = Number(v)
-              if (isNaN(num) || num > (rule as any).max) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `Must be no more than ${(rule as any).max}` })
-            } else if ('pattern' in rule) {
-              const re = new RegExp((rule as any).pattern)
-              if (!re.test(v)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid format' })
-            } else if ('oneOf' in rule) {
-              const set = new Set((rule as any).oneOf.map((x: any) => String(x)))
-              if (!set.has(String(v))) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `Must be one of: ${(rule as any).oneOf.join(', ')}` })
-            }
+          if (num == null || num < 0) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
           }
           break
         }
+        case 'date': {
+          if (!isValidDate(v)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'ssnFormat': {
+          const ssnRe = /^\d{3}-\d{2}-\d{4}$/
+          if (!ssnRe.test(v)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'minLength': {
+          if (v.length < ruleValue) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'maxLength': {
+          if (v.length > ruleValue) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'min': {
+          const num = parseCurrencyToNumber(v)
+          if (num !== null && num < ruleValue) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'max': {
+          const num = parseCurrencyToNumber(v)
+          if (num !== null && num > ruleValue) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'minCreditScore': {
+          // Credit score validation logic
+          const creditScoreValues = {
+            '<660': 659,
+            '660-679': 669,
+            '680-699': 689,
+            '700-719': 709,
+            '720-739': 729,
+            '740-759': 749,
+            '760-779': 769,
+            '780+': 780
+          }
+          const scoreValue = creditScoreValues[v as keyof typeof creditScoreValues] || 0
+          if (scoreValue < ruleValue) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'minAge': {
+          const age = parseInt(v)
+          if (!isNaN(age) && age < ruleValue) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'maxAge': {
+          const age = parseInt(v)
+          if (!isNaN(age) && age > ruleValue) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'pattern': {
+          const re = new RegExp(ruleValue)
+          if (!re.test(v)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        case 'oneOf': {
+          if (!ruleValue.includes(v)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message })
+          }
+          break
+        }
+        default:
+          // Unknown rule type
+          break
       }
     }
   })
