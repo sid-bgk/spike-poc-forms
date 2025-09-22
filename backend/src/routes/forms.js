@@ -1,48 +1,33 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 
 const router = express.Router();
 
-// In-memory store for form configurations
-let formConfigs = new Map();
+// Import the centralized form configuration registry
+let formConfigModule;
 
 /**
- * Load all form configurations from the configs directory
+ * Load form configurations using the centralized registry
  */
-const loadFormConfigurations = () => {
-  const configsDir = path.join(__dirname, '../../configs/forms');
+const loadFormConfigurations = async () => {
+  try {
+    const configsIndexPath = path.join(__dirname, '../../configs/forms/index.js');
+    const moduleUrl = `file://${configsIndexPath.replace(/\\/g, '/')}`;
 
-  if (!fs.existsSync(configsDir)) {
-    console.warn('Forms config directory not found:', configsDir);
-    return;
+    formConfigModule = await import(moduleUrl);
+
+    const formIds = formConfigModule.getFormIds();
+    console.log(`Loaded ${formIds.length} form configurations: ${formIds.join(', ')}`);
+  } catch (error) {
+    console.error('Error loading form configurations:', error.message);
+    throw error;
   }
-
-  const configFiles = fs.readdirSync(configsDir).filter(file => file.endsWith('.json'));
-
-  configFiles.forEach(file => {
-    try {
-      const configPath = path.join(configsDir, file);
-      const configContent = fs.readFileSync(configPath, 'utf8');
-      const formConfig = JSON.parse(configContent);
-
-      // Store configuration using the metadata.id as key
-      if (formConfig.metadata && formConfig.metadata.id) {
-        formConfigs.set(formConfig.metadata.id, formConfig);
-        console.log(`Loaded form configuration: ${formConfig.metadata.id}`);
-      } else {
-        console.warn(`Form configuration in ${file} missing metadata.id`);
-      }
-    } catch (error) {
-      console.error(`Error loading form configuration from ${file}:`, error.message);
-    }
-  });
-
-  console.log(`Loaded ${formConfigs.size} form configurations`);
 };
 
 // Initialize configurations on module load
-loadFormConfigurations();
+loadFormConfigurations().catch(err => {
+  console.error('Error initializing form configurations:', err);
+});
 
 /**
  * GET /api/forms
@@ -50,12 +35,14 @@ loadFormConfigurations();
  */
 router.get('/', (req, res) => {
   try {
-    const forms = Array.from(formConfigs.values()).map(config => ({
-      id: config.metadata.id,
-      name: config.metadata.name,
-      description: config.metadata.description,
-      version: config.metadata.version
-    }));
+    if (!formConfigModule) {
+      return res.status(500).json({
+        success: false,
+        error: 'Form configurations not loaded'
+      });
+    }
+
+    const forms = formConfigModule.getFormMetadata();
 
     res.json({
       success: true,
@@ -76,8 +63,15 @@ router.get('/', (req, res) => {
  */
 router.get('/:formId', (req, res) => {
   try {
+    if (!formConfigModule) {
+      return res.status(500).json({
+        success: false,
+        error: 'Form configurations not loaded'
+      });
+    }
+
     const { formId } = req.params;
-    const config = formConfigs.get(formId);
+    const config = formConfigModule.getFormConfig(formId);
 
     if (!config) {
       return res.status(404).json({
@@ -99,17 +93,73 @@ router.get('/:formId', (req, res) => {
 });
 
 /**
+ * POST /api/forms/:formId/generate
+ * Generate form configuration with custom overrides
+ */
+router.post('/:formId/generate', async (req, res) => {
+  try {
+    if (!formConfigModule) {
+      return res.status(500).json({
+        success: false,
+        error: 'Form configurations not loaded'
+      });
+    }
+
+    const { formId } = req.params;
+    const overrides = req.body || {};
+
+    // Try to create custom configuration with factory function
+    const customConfig = formConfigModule.createFormConfig(formId, overrides);
+
+    if (customConfig) {
+      res.json({
+        success: true,
+        data: customConfig,
+        message: `Generated custom configuration for ${formId} with overrides`
+      });
+    } else {
+      // Fallback to base configuration
+      const baseConfig = formConfigModule.getFormConfig(formId);
+
+      if (!baseConfig) {
+        return res.status(404).json({
+          success: false,
+          error: `Form configuration not found: ${formId}`
+        });
+      }
+
+      res.json({
+        success: true,
+        data: baseConfig,
+        message: `Returned base configuration for ${formId} (no factory function available)`
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
  * POST /api/forms/reload
  * Reload form configurations from disk (useful for development)
  */
-router.post('/reload', (req, res) => {
+router.post('/reload', async (req, res) => {
   try {
-    formConfigs.clear();
-    loadFormConfigurations();
+    // Clear module cache for hot reload
+    const configsIndexPath = path.join(__dirname, '../../configs/forms/index.js');
+    const moduleUrl = `file://${configsIndexPath.replace(/\\/g, '/')}`;
+
+    // Reload the module
+    await loadFormConfigurations();
+
+    const formIds = formConfigModule ? formConfigModule.getFormIds() : [];
 
     res.json({
       success: true,
-      message: `Reloaded ${formConfigs.size} form configurations`
+      message: `Reloaded ${formIds.length} form configurations: ${formIds.join(', ')}`
     });
   } catch (error) {
     res.status(500).json({
