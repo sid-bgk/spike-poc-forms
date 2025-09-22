@@ -2,8 +2,8 @@ export const DEMO_APPLICATION_FORM_CONFIG = {
   metadata: {
     id: "demo-application",
     name: "Demo Application Form - Enhanced with Zod Validation",
-    formType: "APPLICATION_FORM",
   },
+  flowConfig: { type: 'linear', navigation: 'stepped' },
   steps: [
     {
       id: "personal-info",

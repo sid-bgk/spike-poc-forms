@@ -4,9 +4,25 @@ import jsonLogic from 'json-logic-js'
 import { fetchFormConfig } from '../api/formConfig'
 import type { FormConfig as ApiFormConfig } from '../api/formConfig'
 import { ConfigFormRenderer } from './ConfigFormRenderer'
+import { WizardFlowRenderer } from './WizardFlowRenderer'
 import { VerticalConfigFormRenderer } from './VerticalConfigFormRenderer'
 
-type FormType = 'APPLICATION_FORM' | 'MULTI_FLOW_FORM' | string
+type FlowBehavior = 'linear' | 'multi-flow' | 'wizard-flow' | 'hybrid-flow'
+
+function detectFlowBehavior(config: ApiFormConfig): FlowBehavior {
+  if (!config.flowConfig) return 'linear'
+  switch (config.flowConfig.type) {
+    case 'selection':
+      return 'multi-flow'
+    case 'wizard':
+      return 'wizard-flow'
+    case 'hybrid':
+      return 'hybrid-flow'
+    case 'linear':
+    default:
+      return 'linear'
+  }
+}
 
 function pruneConfigByFlow(config: ApiFormConfig, selectionField: string, selectionValue: string): ApiFormConfig {
   const context: Record<string, any> = { [selectionField]: selectionValue }
@@ -102,9 +118,9 @@ export function DynamicFormPage() {
     )
   }
 
-  const formType = (config.metadata?.formType || 'APPLICATION_FORM') as FormType
+  const behavior = detectFlowBehavior(config)
 
-  if (formType === 'APPLICATION_FORM') {
+  if (behavior === 'linear') {
     return (
       <div className="min-h-screen bg-background p-6">
         <VerticalConfigFormRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />
@@ -112,9 +128,9 @@ export function DynamicFormPage() {
     )
   }
 
-  if (formType === 'MULTI_FLOW_FORM') {
-    const selectionStepId = config.flowSelection?.step
-    const selectionFieldName = config.flowSelection?.field
+  if (behavior === 'multi-flow') {
+    const selectionStepId = config.flowConfig?.selectionStep?.stepId || config.flowSelection?.step
+    const selectionFieldName = config.flowConfig?.selectionStep?.fieldName || config.flowSelection?.field
     const selectionStep = config.steps.find((s) => s.id === selectionStepId)
     const selectionField = selectionStep?.fields.find((f) => f.name === selectionFieldName)
 
@@ -154,7 +170,15 @@ export function DynamicFormPage() {
     )
   }
 
-  // Fallback: use horizontal renderer
+  if (behavior === 'wizard-flow') {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <WizardFlowRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />
+      </div>
+    )
+  }
+
+  // Wizard/hybrid fallback to horizontal
   return (
     <div className="min-h-screen bg-background p-6">
       <ConfigFormRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />

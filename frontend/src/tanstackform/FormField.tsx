@@ -12,8 +12,10 @@ export function FormField({ field, value, onChange, onBlur, error, isValidating 
   const errorMessage = typeof error === 'string' ? error : undefined
   const fieldId = `field-${field.id}`
 
+  const normalizedType = String(field.type || '').toLowerCase()
+
   const renderField = () => {
-    switch (field.type) {
+    switch (normalizedType) {
       case 'text':
       case 'email':
       case 'password':
@@ -180,13 +182,21 @@ export function FormField({ field, value, onChange, onBlur, error, isValidating 
           </Select>
         )
 
+      case 'label':
+        return (
+          <div className="text-sm text-muted-foreground">
+            {field.text || field.label}
+          </div>
+        )
+
       default:
+        // Unknown types: don't render an input
         return null
     }
   }
 
   // For checkbox fields, we don't show a separate label since it's built into the field
-  const showLabel = field.type !== 'checkbox'
+  const showLabel = normalizedType !== 'checkbox' && normalizedType !== 'label'
 
   return (
     <div className={cn("space-y-2", getGridClasses(field.grid))}>
@@ -216,8 +226,11 @@ export function FormField({ field, value, onChange, onBlur, error, isValidating 
   )
 }
 
-function getGridClasses(grid: FormFieldType['grid']): string {
-  const classes = []
+function getGridClasses(grid?: FormFieldType['grid']): string {
+  // Default to full width if no grid provided
+  if (!grid) return 'col-span-12'
+
+  const classes: string[] = []
 
   if (grid.xs === 12) classes.push('col-span-12')
   else if (grid.xs === 6) classes.push('col-span-6')
@@ -239,5 +252,6 @@ function getGridClasses(grid: FormFieldType['grid']): string {
   else if (grid.lg === 4) classes.push('lg:col-span-4')
   else if (grid.lg === 3) classes.push('lg:col-span-3')
 
+  if (classes.length === 0) return 'col-span-12'
   return classes.join(' ')
 }

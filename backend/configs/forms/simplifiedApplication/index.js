@@ -17,7 +17,11 @@ export function createSimplifiedApplicationConfig(overrides = {}) {
       name: "Simplified Loan Application POC",
       version: "1.0.0",
       description: "POC demonstrating centralized form configuration with conditional steps",
-      formType: "APPLICATION_FORM"
+    },
+    // New unified flow configuration (Phase 1)
+    flowConfig: {
+      type: "linear",
+      navigation: "stepped",
     },
     steps: [
       personalInfoStep,
@@ -25,13 +29,7 @@ export function createSimplifiedApplicationConfig(overrides = {}) {
       accountTypeStep,
       jointPropertyStep
     ],
-    navigation: {
-      type: "stepped",
-      allowBackward: true,
-      allowSkipping: false,
-      showProgress: true,
-      completionRequired: true
-    },
+    // Navigation now implied via flowConfig; omit legacy root-level navigation
     validation: {
       globalRules: [
         {

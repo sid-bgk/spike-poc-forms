@@ -27,6 +27,27 @@ export interface FormStep {
   required?: boolean
   conditions?: any[]
   fields: FormField[]
+  // Optional metadata used by wizard flows
+  stepType?: string
+  phase?: string
+}
+
+export interface FlowPhase {
+  id: string
+  name: string
+  type: 'selection' | 'wizard' | 'traditional'
+  description: string
+  order?: number
+}
+
+export interface FlowConfig {
+  type: 'linear' | 'selection' | 'wizard' | 'hybrid'
+  navigation?: 'stepped' | 'wizard' | 'free-form' | string
+  selectionStep?: {
+    stepId: string
+    fieldName: string
+  }
+  phases?: FlowPhase[]
 }
 
 export interface FormConfig {
@@ -35,8 +56,9 @@ export interface FormConfig {
     name: string
     version?: string
     description?: string
-    formType: 'APPLICATION_FORM' | 'MULTI_FLOW_FORM' | string
   }
+  // New unified flow configuration (preferred)
+  flowConfig?: FlowConfig
   steps: FormStep[]
   flowSelection?: { step: string; field: string }
   arrayTemplates?: Record<string, {
@@ -54,13 +76,6 @@ export interface FormConfig {
       arrayIndex?: boolean
     }>
   }>
-  navigation?: {
-    type: string
-    allowBackward: boolean
-    allowSkipping: boolean
-    showProgress: boolean
-    completionRequired: boolean
-  }
   validation?: {
     globalRules?: any[]
   }

@@ -57,7 +57,7 @@ export function getFormMetadata() {
     name: config.metadata.name,
     description: config.metadata.description,
     version: config.metadata.version,
-    formType: config.metadata.formType
+    flowConfig: config.flowConfig ? { type: config.flowConfig.type, navigation: config.flowConfig.navigation } : undefined,
   }));
 }
 
