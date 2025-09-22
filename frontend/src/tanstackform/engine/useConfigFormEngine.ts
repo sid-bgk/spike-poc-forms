@@ -1,18 +1,96 @@
 import * as React from 'react'
 import { useForm } from '@tanstack/react-form'
 import { createZodFieldValidator } from '../zodValidation'
-import type { FormEngine, FormEngineOptions, FormData } from './types'
+import type { FormEngine, FormEngineOptions, FormData, FormStep, FormField, FormConfig } from './types'
 import jsonLogic from 'json-logic-js'
 import { useStore } from '@tanstack/react-store'
 import { useNavigationEngine } from './useNavigationEngine'
 
+function buildAugmentedSteps(config: FormConfig): { steps: FormStep[]; dynamicArraySteps: Map<string, { stepId: string; insertAfterIndex: number }> } {
+  const resultSteps: FormStep[] = [...config.steps]
+  const dynamicArraySteps = new Map<string, { stepId: string; insertAfterIndex: number }>()
+
+  if (!config.arrayTemplates) {
+    return { steps: resultSteps, dynamicArraySteps }
+  }
+
+  for (const [templateName] of Object.entries(config.arrayTemplates)) {
+    // Find controller field and its step
+    let controllerStepIndex = -1
+    let controllerFound = false
+    for (let i = 0; i < resultSteps.length; i++) {
+      const step = resultSteps[i]
+      for (const field of step.fields) {
+        if ((field as any).arrayController === templateName) {
+          controllerStepIndex = i
+          controllerFound = true
+          break
+        }
+      }
+      if (controllerFound) break
+    }
+
+    if (controllerStepIndex >= 0) {
+      const stepId = `${templateName}-details`
+      const syntheticStep: FormStep = {
+        id: stepId,
+        name: templateName[0].toUpperCase() + templateName.slice(1),
+        description: 'Provide details',
+        order: (resultSteps[controllerStepIndex]?.order || 0) + 0.1,
+        fields: [],
+      }
+      resultSteps.splice(controllerStepIndex + 1, 0, syntheticStep)
+      dynamicArraySteps.set(templateName, { stepId, insertAfterIndex: controllerStepIndex })
+    }
+  }
+
+  return { steps: resultSteps, dynamicArraySteps }
+}
+
+function expandArrayTemplateFields(
+  templateName: string,
+  config: FormConfig,
+  values: FormData,
+): FormField[] {
+  const tpl = config.arrayTemplates?.[templateName]
+  if (!tpl) return []
+
+  const countField = tpl.countField
+  const rawCount = (values as any)[countField]
+  const appType = (values as any)['applicationType']
+  let count = appType && appType !== 'joint' ? 1 : (typeof rawCount === 'number' ? rawCount : parseInt(String(rawCount || ''), 10))
+  if (!Number.isFinite(count) || count <= 0) count = tpl.defaultCount || 1
+  count = Math.max(tpl.minCount ?? 1, Math.min(tpl.maxCount ?? 99, count))
+
+  const fields: FormField[] = []
+  for (let i = 0; i < count; i++) {
+    for (const base of tpl.fieldTemplate) {
+      const id = `${templateName}[${i}].${base.id}`
+      const name = id
+      fields.push({
+        id,
+        name,
+        type: (base.type as any) || 'text',
+        label: base.label ? `${base.label}` : base.id,
+        required: base.required ?? true,
+        validation: (base.validation as any) || [],
+        grid: base.grid || { xs: 12 },
+      } as unknown as FormField)
+    }
+  }
+  return fields
+}
+
 export function useConfigFormEngine({ config, onSubmit, defaultValues = {} }: FormEngineOptions): FormEngine {
   const [attemptedNext, setAttemptedNext] = React.useState(false)
+
+  // Build augmented steps (dynamic array steps insertion)
+  const { steps: augmentedSteps, dynamicArraySteps } = React.useMemo(() => buildAugmentedSteps(config as FormConfig), [config])
 
   // Build default values
   const formDefaultValues = React.useMemo(() => {
     const values: FormData = { ...defaultValues }
-    for (const step of config.steps) {
+    for (const step of augmentedSteps) {
       for (const field of step.fields) {
         if (!(field.name in values)) {
           switch (field.type) {
@@ -31,7 +109,7 @@ export function useConfigFormEngine({ config, onSubmit, defaultValues = {} }: Fo
       }
     }
     return values
-  }, [config.steps, defaultValues])
+  }, [augmentedSteps, defaultValues])
 
   const form = useForm({
     defaultValues: formDefaultValues,
@@ -62,14 +140,21 @@ export function useConfigFormEngine({ config, onSubmit, defaultValues = {} }: Fo
   // Compute the set of keys used in any conditions (steps + fields)
   const conditionKeys = React.useMemo(() => {
     const set = new Set<string>()
-    for (const step of config.steps) {
+    for (const step of augmentedSteps) {
       step.conditions?.forEach((r) => extractVarsFromLogic(r, set))
       for (const field of step.fields) {
         field.conditions?.forEach((r) => extractVarsFromLogic(r, set))
       }
     }
+    // Include arrayTemplates countFields and applicationType if present
+    if ((config as FormConfig).arrayTemplates) {
+      for (const tpl of Object.values((config as FormConfig).arrayTemplates!)) {
+        if (tpl.countField) set.add(tpl.countField)
+      }
+    }
+    set.add('applicationType')
     return set
-  }, [config.steps, extractVarsFromLogic])
+  }, [augmentedSteps, extractVarsFromLogic, config])
 
   // Subscribe only to the condition keys; re-render when any of them changes
   const conditionKeySignature = useStore(form.store, (s) => {
@@ -95,28 +180,36 @@ export function useConfigFormEngine({ config, onSubmit, defaultValues = {} }: Fo
 
   // Navigation engine (decoupled)
   const nav = useNavigationEngine({
-    steps: config.steps,
+    steps: augmentedSteps,
     evaluateConditions,
     getValues: () => form.state.values as FormData,
     depsSignature: conditionKeySignature,
   })
 
-  const currentStep = config.steps[nav.currentStepIndex]
+  const currentStep = augmentedSteps[nav.currentStepIndex]
   const totalSteps = nav.totalSteps
 
   // Memoized visible fields for current step
   const visibleFields = React.useMemo(() => {
     const valuesSnapshot = form.state.values as FormData
-    return currentStep.fields.filter((field) => evaluateConditions(field.conditions, valuesSnapshot))
-  }, [currentStep.fields, evaluateConditions, conditionKeySignature])
+    // Dynamic array step expansion
+    let baseFields = currentStep.fields
+    // If this step is one of the dynamic array steps, expand from template
+    if ((config as FormConfig).arrayTemplates) {
+      for (const [templateName, meta] of dynamicArraySteps.entries()) {
+        if (currentStep.id === meta.stepId) {
+          baseFields = expandArrayTemplateFields(templateName, config as FormConfig, valuesSnapshot)
+          break
+        }
+      }
+    }
+    return baseFields.filter((field) => evaluateConditions(field.conditions, valuesSnapshot))
+  }, [currentStep.id, currentStep.fields, evaluateConditions, conditionKeySignature, dynamicArraySteps, config])
 
   // Validators per field (for current step)
   const fieldValidators = React.useMemo(
-    () =>
-      new Map(
-        currentStep.fields.map((field) => [field.id, createZodFieldValidator(field.validation || [], field.type)] as const),
-      ),
-    [currentStep.fields],
+    () => new Map(visibleFields.map((field) => [field.id, createZodFieldValidator((field as any).validation || [], (field as any).type)] as const)),
+    [visibleFields],
   )
 
   const getValidatorForField = React.useCallback(
@@ -164,10 +257,14 @@ export function useConfigFormEngine({ config, onSubmit, defaultValues = {} }: Fo
     (e: React.FormEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      form.handleSubmit()
+      void form.handleSubmit()
     },
     [form],
   )
+
+  const submit = React.useCallback(() => {
+    void form.handleSubmit()
+  }, [form])
 
   const stepNavigationProps = React.useMemo(
     () => ({
@@ -180,8 +277,9 @@ export function useConfigFormEngine({ config, onSubmit, defaultValues = {} }: Fo
       onStepClick: goTo,
       steps: nav.stepNavigationProps.steps,
       isSubmitting,
+      onSubmit: submit,
     }),
-    [nav.stepNavigationProps, next, previous, goTo, isSubmitting],
+    [nav.stepNavigationProps, next, previous, goTo, isSubmitting, submit],
   )
 
   const isFieldVisible = React.useCallback(
@@ -207,6 +305,7 @@ export function useConfigFormEngine({ config, onSubmit, defaultValues = {} }: Fo
     previous,
     goTo,
     handleSubmit,
+    submit,
     isFieldVisible,
     stepNavigationProps,
   }

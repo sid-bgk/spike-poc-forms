@@ -35,9 +35,25 @@ export interface FormConfig {
     name: string
     version?: string
     description?: string
-    formType: string
+    formType: 'APPLICATION_FORM' | 'MULTI_FLOW_FORM' | string
   }
   steps: FormStep[]
+  flowSelection?: { step: string; field: string }
+  arrayTemplates?: Record<string, {
+    minCount: number
+    maxCount: number
+    defaultCount: number
+    countField: string
+    fieldTemplate: Array<{
+      id: string
+      type: string
+      label?: string
+      required?: boolean
+      validation?: any[]
+      grid?: { xs: number; sm?: number; md?: number; lg?: number }
+      arrayIndex?: boolean
+    }>
+  }>
   navigation?: {
     type: string
     allowBackward: boolean
@@ -54,8 +70,8 @@ export interface FormConfig {
   }
 }
 
-export async function fetchFormConfig(): Promise<FormConfig> {
-  const response = await fetch('http://localhost:3001/api/forms/simplified-application-poc')
+export async function fetchFormConfig(formId: string): Promise<FormConfig> {
+  const response = await fetch(`http://localhost:3001/api/forms/${formId}`)
 
   if (!response.ok) {
     throw new Error(`Failed to fetch form config: ${response.status} ${response.statusText}`)

@@ -100,7 +100,11 @@ export function VerticalConfigFormRenderer({
                 Next
               </Button>
             ) : (
-              <Button type="submit" disabled={!engine.canGoNext || form.state.isSubmitting}>
+              <Button
+                type="button"
+                onClick={engine.submit}
+                disabled={!engine.canGoNext || form.state.isSubmitting}
+              >
                 {form.state.isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             )}

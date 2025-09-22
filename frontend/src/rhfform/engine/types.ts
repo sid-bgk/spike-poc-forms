@@ -28,6 +28,7 @@ export interface RHFFormEngine {
 
   // Submission
   handleSubmit: (e: React.FormEvent) => void
+  submit: () => void
 
   // Derived props for a generic step navigation UI
   stepNavigationProps: {
@@ -40,8 +41,8 @@ export interface RHFFormEngine {
     onStepClick: (i: number) => void | Promise<void>
     steps: FormStep[]
     isSubmitting: boolean
+    onSubmit?: () => void
   }
 }
 
 export type { FormConfig, FormData, FormField, FormStep }
-

@@ -8,28 +8,18 @@ export function Home() {
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="border rounded-lg p-6 bg-card">
-            <h2 className="text-2xl font-semibold mb-4">TanStack Form Demo</h2>
-            <p className="text-muted-foreground mb-4">
-              A demonstration of dynamic form generation using TanStack Form with configuration-driven fields and validation.
-            </p>
-            <Link
-              to="/tanstack/form"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-            >
-              View TanStack Form Demo
+            <h2 className="text-2xl font-semibold mb-4">PPF Broker (Multi-flow)</h2>
+            <p className="text-muted-foreground mb-4">Loan type selection + dynamic borrowers.</p>
+            <Link to="/tanstack/form/ppf-broker-complete" className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+              Open ppf-broker-complete
             </Link>
           </div>
 
           <div className="border rounded-lg p-6 bg-card">
-            <h2 className="text-2xl font-semibold mb-4">Vertical Steps Demo</h2>
-            <p className="text-muted-foreground mb-4">
-              Same engine with a vertical stepper navigation and two-column layout.
-            </p>
-            <Link
-              to="/tanstack/form-vertical"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-            >
-              View Vertical Steps Demo
+            <h2 className="text-2xl font-semibold mb-4">Simplified Application (Vertical)</h2>
+            <p className="text-muted-foreground mb-4">Single-flow application form.</p>
+            <Link to="/tanstack/form/simplified-application-poc" className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+              Open simplified-application-poc
             </Link>
           </div>
         </div>

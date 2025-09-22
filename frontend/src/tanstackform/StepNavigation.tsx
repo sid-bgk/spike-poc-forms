@@ -12,7 +12,8 @@ export function StepNavigation({
   onPrevious,
   onStepClick,
   steps,
-  isSubmitting = false
+  isSubmitting = false,
+  onSubmit
 }: StepNavigationProps) {
   return (
     <div className="space-y-6">
@@ -85,12 +86,22 @@ export function StepNavigation({
               Next
             </Button>
           ) : (
-            <Button
-              type="submit"
-              disabled={!canGoNext || isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </Button>
+            onSubmit ? (
+              <Button
+                type="button"
+                onClick={onSubmit}
+                disabled={!canGoNext || isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                disabled={!canGoNext || isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </Button>
+            )
           )}
         </div>
       </div>

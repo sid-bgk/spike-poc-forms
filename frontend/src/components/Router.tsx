@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
-import { DemoFormExample } from '../tanstackform/DemoFormExample'
-import { DemoVerticalFormExample } from '../tanstackform/DemoVerticalFormExample'
+import { DynamicFormPage } from '../tanstackform/DynamicFormPage'
 import { DemoRHFFormExample } from '../rhfform/DemoRHFFormExample'
+import { DynamicRHFFormPage } from '../rhfform/DynamicRHFFormPage'
 import { Home } from './Home'
 
 function Navigation() {
@@ -16,9 +16,9 @@ function Navigation() {
           </Link>
           <div className="flex items-center gap-4">
             <Link
-              to="/tanstack/form"
+              to="/tanstack/form/ppf-broker-complete"
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname === '/tanstack/form'
+                location.pathname.startsWith('/tanstack/form')
                   ? 'text-primary border-b-2 border-primary pb-1'
                   : 'text-muted-foreground'
               }`}
@@ -26,9 +26,9 @@ function Navigation() {
               TanStack Form
             </Link>
             <Link
-              to="/rhf/form"
+              to="/rhf/form/simplified-application-poc"
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname === '/rhf/form'
+                location.pathname.startsWith('/rhf/form')
                   ? 'text-primary border-b-2 border-primary pb-1'
                   : 'text-muted-foreground'
               }`}
@@ -50,9 +50,8 @@ export function Router() {
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/tanstack/form" element={<DemoFormExample />} />
-            <Route path="/tanstack/form-vertical" element={<DemoVerticalFormExample />} />
-            <Route path="/rhf/form" element={<DemoRHFFormExample />} />
+            <Route path="/tanstack/form/:formId" element={<DynamicFormPage />} />
+            <Route path="/rhf/form/:formId" element={<DynamicRHFFormPage />} />
           </Routes>
         </main>
       </div>

@@ -16,6 +16,7 @@ export function FormField({ field, value, onChange, onBlur, error, isValidating 
     switch (field.type) {
       case 'text':
       case 'email':
+      case 'password':
         return (
           <Input
             id={fieldId}
