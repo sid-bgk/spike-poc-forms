@@ -1,0 +1,400 @@
+{
+  "metadata": {
+    "id": "ppf-broker-simple-transform",
+    "name": "PPF Broker Ultra-Simple Transform",
+    "version": "1.0.0",
+    "description": "Ultra-simple array-based transformation for PPF broker forms",
+    "baseConfig": "ppf-broker-complete.json"
+  },
+  "transformations": {
+    "inbound": {
+      "borrower_information_applicant_type": [
+        {
+          "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].applicationData.applicationType",
+          "condition": "notEmpty"
+        },
+        {
+          "path": "additionalInfo.applicationType",
+          "condition": "notEmpty"
+        },
+        { "default": "" }
+      ],
+
+      "borrower_information_number_of_borrowers": [
+        { "path": "additionalInfo.numberOfBorrowers" },
+        { "default": "1" }
+      ],
+
+      "property_street": [
+        { "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].propertyAddress.address" },
+        { "path": "additionalInfo.propertyAddress.address" },
+        { "default": "" }
+      ],
+
+      "property_apartment_number": [
+        { "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].propertyAddress.apartmentNumber" },
+        { "path": "additionalInfo.propertyAddress.apartmentNumber" },
+        { "default": "" }
+      ],
+
+      "property_city": [
+        { "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].propertyAddress.city" },
+        { "path": "additionalInfo.propertyAddress.city" },
+        { "default": "" }
+      ],
+
+      "property_state": [
+        { "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].propertyAddress.state" },
+        { "path": "additionalInfo.propertyAddress.state" },
+        { "default": "" }
+      ],
+
+      "property_zip": [
+        { "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].propertyAddress.zip" },
+        { "path": "additionalInfo.propertyAddress.zip" },
+        { "default": "" }
+      ],
+
+      "loan_purpose": [
+        { "path": "additionalInfo.loanInformation.loanPurpose" },
+        { "default": "" }
+      ],
+
+      "property_type": [
+        { "path": "additionalInfo.loanInformation.propertyType" },
+        { "default": "" }
+      ],
+
+      "estimated_credit_score": [
+        { "path": "additionalInfo.loanInformation.estimatedCreditScore" },
+        { "default": "" }
+      ],
+
+      "property_value": [
+        { "path": "additionalInfo.loanInformation.propertyValue" },
+        { "default": "" }
+      ],
+
+      "mortgage_lates": [
+        { "path": "additionalInfo.loanInformation.mortgageLates" },
+        { "default": "" }
+      ],
+
+      "rental_use": [
+        { "path": "additionalInfo.loanInformation.rentalUse" },
+        { "default": "" }
+      ],
+
+      "citizenship": [
+        { "path": "additionalInfo.loanInformation.citizenship" },
+        { "default": "" }
+      ],
+
+      "projects_completed_in_past_36_months": [
+        { "path": "additionalInfo.loanInformation.projectCompletedInPast36Month" },
+        { "default": "" }
+      ],
+
+      "outstanding_loan_balance": [
+        { "path": "additionalInfo.loanInformation.outstandingLoanBalance" },
+        { "default": "" }
+      ],
+
+      "monthly_property_taxes": [
+        { "path": "additionalInfo.rentAndExpanses.monthlyPropertyTaxes" },
+        { "default": "" }
+      ],
+
+      "monthly_insurance": [
+        { "path": "additionalInfo.rentAndExpanses.monthlyInsurance" },
+        { "default": "" }
+      ],
+
+      "monthly_flood_insurance": [
+        { "path": "additionalInfo.rentAndExpanses.monthlyFloodInsurance" },
+        { "default": "" }
+      ],
+
+      "hoa_fees": [
+        { "path": "additionalInfo.rentAndExpanses.hoaFees" },
+        { "default": "" }
+      ],
+
+      "no_of_units": [
+        { "path": "additionalInfo.rentAndExpanses.noOfUnits" },
+        { "default": "" }
+      ],
+
+      "unit_{index}_monthly_rent": [
+        {
+          "path": "additionalInfo.rentAndExpanses.unitRent",
+          "type": "arrayExpand",
+          "pattern": "unit_{index}_monthly_rent",
+          "valueField": "rent"
+        }
+      ],
+
+      "purchase_price": [
+        { "path": "additionalInfo.repairAndRehab.purchasePrice" },
+        { "default": "" }
+      ],
+
+      "date_of_purchase": [
+        { "path": "additionalInfo.repairAndRehab.dateOfPurchase" },
+        { "default": "" }
+      ],
+
+      "property_improvement": [
+        { "path": "additionalInfo.repairAndRehab.propertyImprovement" },
+        { "default": "" }
+      ],
+
+      "amount_owed": [
+        { "path": "additionalInfo.repairAndRehab.amountOwed" },
+        { "default": "" }
+      ],
+
+      "rehab_amount": [
+        { "path": "additionalInfo.repairAndRehab.rehabAmount" },
+        { "default": "" }
+      ],
+
+      "construction_budget": [
+        { "path": "additionalInfo.repairAndRehab.constructionBudget" },
+        { "default": "" }
+      ],
+
+      "arv": [
+        { "path": "additionalInfo.repairAndRehab.arv" },
+        { "default": "" }
+      ],
+
+      "available_liquidity": [
+        { "path": "additionalInfo.repairAndRehab.availableLiquidity" },
+        { "default": "" }
+      ],
+
+      "area_more_than_500_sqft": [
+        { "path": "additionalInfo.repairAndRehab.areaMoreThan500Sqft" },
+        { "default": "" }
+      ],
+
+      "additional_sqft": [
+        { "path": "additionalInfo.repairAndRehab.additionalSqft" },
+        { "default": "" }
+      ],
+
+      "qualifying_loan_amount": [
+        { "path": "additionalInfo.pricing.qualifyingLoanAmount" },
+        { "default": "" }
+      ],
+
+      "broker_points": [
+        { "path": "additionalInfo.pricing.brokerPoints" },
+        { "default": "" }
+      ],
+
+      "prepayment_penalty": [
+        { "path": "additionalInfo.pricing.prepaymentPenalty" },
+        { "default": "" }
+      ],
+
+      "loan_product": [
+        { "path": "additionalInfo.pricing.loanProduct" },
+        { "default": "" }
+      ],
+
+      "lock_rate": [
+        { "path": "additionalInfo.pricing.lockRate" },
+        { "default": false }
+      ],
+
+      "loan_term": [
+        { "path": "additionalInfo.pricing.loanTerm" },
+        { "default": "" }
+      ],
+
+      "loan_type_name": [
+        { "path": "additionalInfo.loanTypeName" },
+        { "default": "" }
+      ],
+
+      "loan_type": [
+        { "path": "additionalInfo.loanType" },
+        { "default": "" }
+      ],
+
+      "partnerId": [
+        { "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].partnerId" },
+        { "path": "additionalInfo.partnerId" },
+        { "default": "" }
+      ],
+
+      "rateData": [
+        { "path": "additionalInfo.pricing.rateData" },
+        { "default": {} }
+      ],
+
+      "borrower_information_{index}_first_name": [
+        {
+          "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+          "type": "arrayIndex",
+          "field": "firstName",
+          "condition": "arrayNotEmpty"
+        },
+        {
+          "path": "additionalInfo.borrowers",
+          "type": "arrayIndex",
+          "field": "firstName",
+          "condition": "arrayNotEmpty"
+        },
+        { "default": "" }
+      ],
+
+      "borrower_information_{index}_last_name": [
+        {
+          "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+          "type": "arrayIndex",
+          "field": "lastName",
+          "condition": "arrayNotEmpty"
+        },
+        {
+          "path": "additionalInfo.borrowers",
+          "type": "arrayIndex",
+          "field": "lastName",
+          "condition": "arrayNotEmpty"
+        },
+        { "default": "" }
+      ],
+
+      "borrower_information_{index}_phone": [
+        {
+          "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+          "type": "arrayIndex",
+          "field": "phone",
+          "condition": "arrayNotEmpty"
+        },
+        {
+          "path": "additionalInfo.borrowers",
+          "type": "arrayIndex",
+          "field": "phone",
+          "condition": "arrayNotEmpty"
+        },
+        { "default": "" }
+      ],
+
+      "borrower_information_{index}_email": [
+        {
+          "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+          "type": "arrayIndex",
+          "field": "email",
+          "condition": "arrayNotEmpty"
+        },
+        {
+          "path": "additionalInfo.borrowers",
+          "type": "arrayIndex",
+          "field": "email",
+          "condition": "arrayNotEmpty"
+        },
+        { "default": "" }
+      ],
+
+      "borrower_information_{index}_ssn": [
+        {
+          "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+          "type": "arrayIndex",
+          "field": "ssn",
+          "condition": "arrayNotEmpty"
+        },
+        {
+          "path": "additionalInfo.borrowers",
+          "type": "arrayIndex",
+          "field": "ssn",
+          "condition": "arrayNotEmpty"
+        },
+        { "default": "" }
+      ],
+
+      "borrower_information_{index}_last_4_ssn": [
+        {
+          "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+          "type": "arrayIndex",
+          "field": "partialSsn",
+          "condition": "arrayNotEmpty"
+        },
+        {
+          "path": "additionalInfo.borrowers",
+          "type": "arrayIndex",
+          "field": "partialSsn",
+          "condition": "arrayNotEmpty"
+        },
+        { "default": "" }
+      ],
+
+      "borrower_information_{index}_dob": [
+        {
+          "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+          "type": "arrayIndex",
+          "field": "dob",
+          "condition": "arrayNotEmpty"
+        },
+        {
+          "path": "additionalInfo.borrowers",
+          "type": "arrayIndex",
+          "field": "dob",
+          "condition": "arrayNotEmpty"
+        },
+        { "default": "" }
+      ]
+    },
+
+    "outbound": {
+      "loan.purpose": [
+        { "path": "loan_purpose" }
+      ],
+      "property.type": [
+        { "path": "property_type" }
+      ],
+      "property.state": [
+        { "path": "property_state" }
+      ],
+      "property.value": [
+        { "path": "property_value" }
+      ],
+      "borrowers[].personal.firstName": [
+        {
+          "path": "borrowers",
+          "type": "arrayField",
+          "field": "firstName"
+        }
+      ],
+      "borrowers[].personal.lastName": [
+        {
+          "path": "borrowers",
+          "type": "arrayField",
+          "field": "lastName"
+        }
+      ],
+      "borrowers[].personal.email": [
+        {
+          "path": "borrowers",
+          "type": "arrayField",
+          "field": "email"
+        }
+      ],
+      "borrowers[].personal.phone": [
+        {
+          "path": "borrowers",
+          "type": "arrayField",
+          "field": "phone"
+        }
+      ],
+      "application.type": [
+        { "path": "applicationType" }
+      ],
+      "application.borrowerCount": [
+        { "path": "numberOfBorrowers" }
+      ]
+    }
+  }
+}
