@@ -13,7 +13,7 @@ export function DemoRHFFormExample() {
       try {
         setLoading(true)
         setError(null)
-        const cfg = await fetchFormConfig()
+        const cfg = await fetchFormConfig('simplified-application-poc')
         setConfig(cfg)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load form configuration')
@@ -92,4 +92,3 @@ export function DemoRHFFormExample() {
     </div>
   )
 }
-

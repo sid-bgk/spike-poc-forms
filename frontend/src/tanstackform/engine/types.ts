@@ -39,6 +39,7 @@ export interface FormEngine {
 
   // Submission
   handleSubmit: (e: React.FormEvent) => void
+  submit: () => void
 
   // Visibility helpers
   isFieldVisible: (field: FormField) => boolean
@@ -54,6 +55,7 @@ export interface FormEngine {
     onStepClick: (i: number) => void
     steps: FormStep[]
     isSubmitting: boolean
+    onSubmit?: () => void
   }
 }
 

@@ -13,7 +13,7 @@ export function DemoFormExample() {
       try {
         setLoading(true)
         setError(null)
-        const formConfig = await fetchFormConfig()
+        const formConfig = await fetchFormConfig('simplified-application-poc')
         setConfig(formConfig)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load form configuration')

@@ -49,6 +49,7 @@ export function RHFFormField({ field }: Props) {
     switch (field.type) {
       case 'text':
       case 'email':
+      case 'password':
         return (
           <Input
             id={fieldId}
