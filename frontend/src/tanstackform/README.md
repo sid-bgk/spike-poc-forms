@@ -18,22 +18,22 @@ A powerful, reusable form rendering system built with TanStack Form, Zod validat
 ### 1. Basic Usage
 
 ```tsx
-import { ConfigFormRenderer } from './tanstackform'
-import { myFormConfig } from './config/my-form-config'
+import { ConfigFormRenderer } from "./tanstackform";
+import { myFormConfig } from "./config/my-form-config";
 
 function MyForm() {
   const handleSubmit = async (data) => {
-    console.log('Form data:', data)
+    console.log("Form data:", data);
     // Handle form submission
-  }
+  };
 
   return (
     <ConfigFormRenderer
       config={myFormConfig}
       onSubmit={handleSubmit}
-      defaultValues={{ firstName: '', email: '' }}
+      defaultValues={{ firstName: "", email: "" }}
     />
-  )
+  );
 }
 ```
 
@@ -69,12 +69,13 @@ export const myFormConfig = {
     },
     // ... more steps
   ],
-}
+};
 ```
 
 ## Field Types
 
 ### Text Input
+
 ```typescript
 {
   type: "text",
@@ -83,6 +84,7 @@ export const myFormConfig = {
 ```
 
 ### Email Input
+
 ```typescript
 {
   type: "email",
@@ -91,6 +93,7 @@ export const myFormConfig = {
 ```
 
 ### Phone Input (US Format)
+
 ```typescript
 {
   type: "phone",
@@ -99,6 +102,7 @@ export const myFormConfig = {
 ```
 
 ### Date Input
+
 ```typescript
 {
   type: "date",
@@ -107,6 +111,7 @@ export const myFormConfig = {
 ```
 
 ### Currency Input
+
 ```typescript
 {
   type: "currency",
@@ -115,6 +120,7 @@ export const myFormConfig = {
 ```
 
 ### Radio Buttons
+
 ```typescript
 {
   type: "radio",
@@ -127,6 +133,7 @@ export const myFormConfig = {
 ```
 
 ### Checkbox
+
 ```typescript
 {
   type: "checkbox",
@@ -135,6 +142,7 @@ export const myFormConfig = {
 ```
 
 ### Dropdown/Select
+
 ```typescript
 {
   type: "dropdown",
@@ -148,6 +156,7 @@ export const myFormConfig = {
 ```
 
 ### Textarea
+
 ```typescript
 {
   type: "textarea",
@@ -160,6 +169,7 @@ export const myFormConfig = {
 The system supports comprehensive validation using Zod schemas:
 
 ### Basic Validation
+
 - `"required"` - Field is required
 - `"email"` - Valid email format
 - `"phoneUS"` - US phone format (555) 123-4567
@@ -168,17 +178,21 @@ The system supports comprehensive validation using Zod schemas:
 - `"zipCodeUS"` - US ZIP code format
 
 ### Length Validation
+
 - `{ minLength: 5 }` - Minimum character length
 - `{ maxLength: 100 }` - Maximum character length
 
 ### Numeric Validation
+
 - `{ min: 18 }` - Minimum value
 - `{ max: 100 }` - Maximum value
 
 ### Pattern Validation
+
 - `{ pattern: "^[A-Za-z]+$" }` - Custom regex pattern
 
 ### Enum Validation
+
 - `{ oneOf: ["option1", "option2"] }` - Must be one of specified values
 
 ## Grid Layout
@@ -197,6 +211,7 @@ grid: {
 ## Advanced Features
 
 ### Conditional Fields
+
 ```typescript
 {
   id: "conditionalField",
@@ -206,14 +221,18 @@ grid: {
 ```
 
 ### Step Navigation
+
 The system automatically handles:
+
 - Step progress indicators
 - Previous/Next navigation
 - Step validation before navigation
 - Submit button on final step
 
 ### Form State Management
+
 Access form state in development mode:
+
 - Current values
 - Validation errors
 - Step progress
@@ -225,10 +244,10 @@ Access form state in development mode:
 
 ```typescript
 interface ConfigFormRendererProps {
-  config: FormConfig
-  onSubmit: (data: FormData) => void | Promise<void>
-  defaultValues?: Partial<FormData>
-  className?: string
+  config: FormConfig;
+  onSubmit: (data: FormData) => void | Promise<void>;
+  defaultValues?: Partial<FormData>;
+  className?: string;
 }
 ```
 
@@ -237,11 +256,11 @@ interface ConfigFormRendererProps {
 ```typescript
 interface FormConfig {
   metadata: {
-    id: string
-    name: string
-    formType: string
-  }
-  steps: FormStep[]
+    id: string;
+    name: string;
+    formType: string;
+  };
+  steps: FormStep[];
 }
 ```
 
@@ -249,11 +268,11 @@ interface FormConfig {
 
 ```typescript
 interface FormStep {
-  id: string
-  name: string
-  description: string
-  order: number
-  fields: FormField[]
+  id: string;
+  name: string;
+  description: string;
+  order: number;
+  fields: FormField[];
 }
 ```
 
@@ -261,17 +280,26 @@ interface FormStep {
 
 ```typescript
 interface FormField {
-  id: string
-  name: string
-  type: 'text' | 'email' | 'phone' | 'date' | 'currency' | 'radio' | 'checkbox' | 'dropdown' | 'textarea'
-  label: string
-  required: boolean
-  placeholder?: string
-  helpText?: string
-  validation?: ValidationRule[]
-  options?: Array<{ value: string; label: string; description?: string }>
-  dependencies?: string[]
-  grid: { xs: number; sm?: number; md?: number; lg?: number }
+  id: string;
+  name: string;
+  type:
+    | "text"
+    | "email"
+    | "phone"
+    | "date"
+    | "currency"
+    | "radio"
+    | "checkbox"
+    | "dropdown"
+    | "textarea";
+  label: string;
+  required: boolean;
+  placeholder?: string;
+  helpText?: string;
+  validation?: ValidationRule[];
+  options?: Array<{ value: string; label: string; description?: string }>;
+  dependencies?: string[];
+  grid: { xs: number; sm?: number; md?: number; lg?: number };
 }
 ```
 
@@ -282,6 +310,7 @@ See `DemoFormExample.tsx` for a complete working example using the demo configur
 ## Development
 
 The form renderer is built with:
+
 - **TanStack Form**: Form state management and validation
 - **Zod**: Schema validation
 - **shadcn/ui**: Component library
@@ -289,6 +318,7 @@ The form renderer is built with:
 - **TypeScript**: Type safety
 
 To extend the system:
+
 1. Add new field types in `FormField.tsx`
 2. Add validation rules in `validation.ts`
 3. Update types in `types.ts`

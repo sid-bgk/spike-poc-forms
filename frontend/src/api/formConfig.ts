@@ -41,8 +41,8 @@ export interface FlowPhase {
 }
 
 export interface FlowConfig {
-  type: 'linear' | 'selection' | 'wizard' | 'hybrid'
-  navigation?: 'stepped' | 'wizard' | 'free-form' | string
+  type: 'linear' | 'selection' | 'wizard' | 'hybrid' | 'single'
+  navigation?: 'stepped' | 'wizard' | 'free-form' | 'sections' | string
   selectionStep?: {
     stepId: string
     fieldName: string
@@ -85,6 +85,14 @@ export interface FormConfig {
   }
 }
 
+export interface FormMetadataSummary {
+  id: string
+  name: string
+  description?: string
+  version?: string
+  flowConfig?: { type?: string; navigation?: string }
+}
+
 export async function fetchFormConfig(formId: string): Promise<FormConfig> {
   const response = await fetch(`http://localhost:3001/api/forms/${formId}`)
 
@@ -99,4 +107,16 @@ export async function fetchFormConfig(formId: string): Promise<FormConfig> {
   }
 
   return result.data
+}
+
+export async function fetchAllForms(): Promise<FormMetadataSummary[]> {
+  const response = await fetch('http://localhost:3001/api/forms')
+  if (!response.ok) {
+    throw new Error(`Failed to fetch forms: ${response.status} ${response.statusText}`)
+  }
+  const result = await response.json()
+  if (!result.success) {
+    throw new Error('API returned error: ' + (result.error || 'Unknown error'))
+  }
+  return result.data as FormMetadataSummary[]
 }

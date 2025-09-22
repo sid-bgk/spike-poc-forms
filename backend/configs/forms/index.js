@@ -3,11 +3,13 @@
 
 // Import all form configurations
 import { createSimplifiedApplicationConfig } from './simplifiedApplication/index.js';
+import { createSinglePageApplicationConfig } from './singlePageApplication/index.js';
 import { createPpfBrokerCompleteConfig } from './ppfBrokerComplete/index.js';
 import { createPpfRetailWizardConfig } from './ppfRetailWizard/index.js';
 
 // Create base configurations
 const simplifiedApplicationConfig = createSimplifiedApplicationConfig();
+const singlePageApplicationConfig = createSinglePageApplicationConfig();
 const ppfBrokerCompleteConfig = createPpfBrokerCompleteConfig();
 const ppfRetailWizardConfig = createPpfRetailWizardConfig();
 
@@ -15,6 +17,9 @@ const ppfRetailWizardConfig = createPpfRetailWizardConfig();
 export const FORM_CONFIGS = {
   // Simplified Application
   'simplified-application-poc': simplifiedApplicationConfig,
+
+  // Single Page Application (sections-based)
+  'single-page-application': singlePageApplicationConfig,
 
   // PPF Broker Complete (DSCR + RTL multi-flow)
   'ppf-broker-complete': ppfBrokerCompleteConfig,
@@ -26,6 +31,7 @@ export const FORM_CONFIGS = {
 // Factory functions registry for custom configurations
 export const FORM_FACTORIES = {
   'simplified-application-poc': createSimplifiedApplicationConfig,
+  'single-page-application': createSinglePageApplicationConfig,
   'ppf-broker-complete': createPpfBrokerCompleteConfig,
   'ppf-retail-wizard': createPpfRetailWizardConfig
 };

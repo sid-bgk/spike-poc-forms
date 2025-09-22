@@ -45,8 +45,8 @@ export interface FlowPhase {
 }
 
 export interface FlowConfig {
-  type: 'linear' | 'selection' | 'wizard' | 'hybrid'
-  navigation?: 'stepped' | 'wizard' | 'free-form' | string
+  type: 'linear' | 'selection' | 'wizard' | 'hybrid' | 'single'
+  navigation?: 'stepped' | 'wizard' | 'free-form' | 'sections' | string
   selectionStep?: {
     stepId: string
     fieldName: string

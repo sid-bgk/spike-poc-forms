@@ -6,12 +6,15 @@ import type { FormConfig as ApiFormConfig } from '../api/formConfig'
 import { ConfigFormRenderer } from './ConfigFormRenderer'
 import { WizardFlowRenderer } from './WizardFlowRenderer'
 import { VerticalConfigFormRenderer } from './VerticalConfigFormRenderer'
+import { SinglePageFormRenderer } from './SinglePageFormRenderer'
 
-type FlowBehavior = 'linear' | 'multi-flow' | 'wizard-flow' | 'hybrid-flow'
+type FlowBehavior = 'linear' | 'multi-flow' | 'wizard-flow' | 'hybrid-flow' | 'single-flow'
 
 function detectFlowBehavior(config: ApiFormConfig): FlowBehavior {
   if (!config.flowConfig) return 'linear'
   switch (config.flowConfig.type) {
+    case 'single':
+      return 'single-flow'
     case 'selection':
       return 'multi-flow'
     case 'wizard':
@@ -174,6 +177,14 @@ export function DynamicFormPage() {
     return (
       <div className="min-h-screen bg-background p-6">
         <WizardFlowRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />
+      </div>
+    )
+  }
+
+  if (behavior === 'single-flow') {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <SinglePageFormRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />
       </div>
     )
   }
