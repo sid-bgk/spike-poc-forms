@@ -1,6 +1,7 @@
 const express = require('express');
 const { getConfigById, getAllConfigs } = require('../services/FormService');
 const { validateFormSubmission } = require('../middleware/validateFormSubmission');
+const { validateStepSubmission } = require('../middleware/validateStepSubmission');
 
 const router = express.Router();
 
@@ -79,6 +80,44 @@ router.post('/:formId/submit', validateFormSubmission, (req, res) => {
     });
   } catch (error) {
     console.error('Error processing form submission:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/forms/:formId/save-progress
+ * Handle step-wise form progress saving with validation
+ */
+router.post('/:formId/save-progress', validateStepSubmission, (req, res) => {
+  try {
+    const { formId } = req.params;
+    const { stepId, sessionId } = req.body;
+    const validatedData = req.validatedStepData;
+    const step = req.step;
+
+    console.log('=== STEP SAVE ===');
+    console.log('Form ID:', formId);
+    console.log('Step ID:', stepId);
+    console.log('Session ID:', sessionId);
+    console.log('Step Name:', step.name);
+    console.log('Validated Data:', JSON.stringify(validatedData, null, 2));
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('=================');
+
+    res.json({
+      success: true,
+      message: 'Step progress saved successfully',
+      formId,
+      stepId,
+      stepName: step.name,
+      validatedData,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error processing step save:', error);
     res.status(500).json({
       success: false,
       error: error.message

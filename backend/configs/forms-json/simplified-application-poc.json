@@ -9,6 +9,10 @@
     "type": "linear",
     "navigation": "stepped"
   },
+  "saveConfig": {
+    "enabled": true,
+    "saveOnStepComplete": true
+  },
   "steps": [
     {
       "id": "personal-info",
