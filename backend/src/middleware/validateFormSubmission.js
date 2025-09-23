@@ -1,5 +1,6 @@
-const path = require('path');
-const { validateFormData } = require('../utils/zodSchemaGenerator');
+const path = require("path");
+const { validateFormData } = require("../utils/zodSchemaGenerator");
+const { getConfigById } = require("../services/FormService");
 
 /**
  * Middleware to validate form submission data against form configuration
@@ -9,25 +10,12 @@ async function validateFormSubmission(req, res, next) {
     const { formId } = req.params;
     const formData = req.body;
 
-    // Load form configurations if not already loaded
-    let formConfigModule;
-    try {
-      const configsIndexPath = path.join(__dirname, '../../configs/forms/index.js');
-      const moduleUrl = `file://${configsIndexPath.replace(/\\/g, '/')}`;
-      formConfigModule = await import(moduleUrl);
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        error: 'Form configurations could not be loaded'
-      });
-    }
-
     // Get form configuration
-    const formConfig = formConfigModule.getFormConfig(formId);
+    const formConfig = getConfigById(formId);
     if (!formConfig) {
       return res.status(404).json({
         success: false,
-        error: `Form configuration not found: ${formId}`
+        error: `Form configuration not found: ${formId}`,
       });
     }
 
@@ -37,9 +25,9 @@ async function validateFormSubmission(req, res, next) {
     if (!validationResult.success) {
       return res.status(400).json({
         success: false,
-        error: 'Validation failed',
+        error: "Validation failed",
         validationErrors: validationResult.errors,
-        formId
+        formId,
       });
     }
 
@@ -49,10 +37,10 @@ async function validateFormSubmission(req, res, next) {
 
     next();
   } catch (error) {
-    console.error('Error in form validation middleware:', error);
+    console.error("Error in form validation middleware:", error);
     res.status(500).json({
       success: false,
-      error: 'Internal server error during validation'
+      error: "Internal server error during validation",
     });
   }
 }
