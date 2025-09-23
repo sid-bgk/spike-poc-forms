@@ -143,6 +143,36 @@ router.post('/:formId/generate', async (req, res) => {
 });
 
 /**
+ * POST /api/forms/:formId/submit
+ * Handle form submission and log the response
+ */
+router.post('/:formId/submit', (req, res) => {
+  try {
+    const { formId } = req.params;
+    const payload = req.body;
+
+    console.log('=== FORM SUBMISSION ===');
+    console.log('Form ID:', formId);
+    console.log('Payload:', JSON.stringify(payload, null, 2));
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('========================');
+
+    res.json({
+      success: true,
+      message: 'Form submission received and logged',
+      formId,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error processing form submission:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
  * POST /api/forms/reload
  * Reload form configurations from disk (useful for development)
  */
