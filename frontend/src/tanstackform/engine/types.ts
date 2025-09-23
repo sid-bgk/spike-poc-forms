@@ -1,5 +1,5 @@
 import type { FormApi } from '@tanstack/react-form'
-import type { FormConfig, FormData, FormField, FormStep } from '../types'
+import type { FormConfig, FormData, FormField, FormStep, SaveState } from '../types'
 
 export interface FormEngineOptions {
   config: FormConfig
@@ -41,6 +41,10 @@ export interface FormEngine {
   handleSubmit: (e: React.FormEvent) => void
   submit: () => void
 
+  // Step-based save functionality
+  saveState: SaveState
+  saveStepData: (stepId: string, stepData: FormData) => Promise<void>
+
   // Visibility helpers
   isFieldVisible: (field: FormField) => boolean
 
@@ -55,6 +59,7 @@ export interface FormEngine {
     onStepClick: (i: number) => void
     steps: FormStep[]
     isSubmitting: boolean
+    isSaving: boolean
     onSubmit?: () => void
   }
 }

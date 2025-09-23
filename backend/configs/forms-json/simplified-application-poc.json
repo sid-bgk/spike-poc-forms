@@ -745,10 +745,7 @@
     "globalRules": [
       {
         "type": "crossField",
-        "fields": [
-          "email",
-          "mobile"
-        ],
+        "fields": ["email", "mobile"],
         "rule": "unique",
         "message": "Email and mobile must be unique across all applicants"
       }

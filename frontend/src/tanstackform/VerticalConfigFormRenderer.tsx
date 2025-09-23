@@ -2,6 +2,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { FormField } from "./FormField"
 import { VerticalStepList } from "./VerticalStepList"
+import { SaveStatusIndicator } from "./SaveStatusIndicator"
 import { cn } from "@/lib/utils"
 import type { FormConfig, FormData } from "./types"
 import { useConfigFormEngine } from './engine/useConfigFormEngine'
@@ -24,6 +25,9 @@ export function VerticalConfigFormRenderer({
   const engine = useConfigFormEngine({ config, onSubmit, defaultValues })
   const { form, currentStep, totalSteps, handleSubmit } = engine
 
+  // Show save UI only if enabled in config
+  const showSaveUI = config.saveConfig?.enabled
+
   return (
     <div className={cn("w-full max-w-6xl mx-auto space-y-6", className)}>
       <div className="space-y-1">
@@ -32,6 +36,15 @@ export function VerticalConfigFormRenderer({
           Step {engine.stepNavigationProps.currentStep + 1} of {totalSteps}: {currentStep.name}
         </p>
         <p className="text-xs text-muted-foreground">Renders: {renderCountRef.current}</p>
+
+        {/* Step Save Indicator */}
+        {showSaveUI && (
+          <SaveStatusIndicator
+            saveState={engine.saveState}
+            onManualSave={() => engine.saveStepData(currentStep.id, form.state.values)}
+            showManualSave={config.saveConfig?.allowManualSave}
+          />
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-6">
