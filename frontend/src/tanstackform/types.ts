@@ -31,14 +31,36 @@ export interface FormStep {
   order: number
   conditions?: any[]
   fields: FormField[]
+  // Optional metadata used by wizard flows
+  stepType?: string
+  phase?: string
+}
+
+export interface FlowPhase {
+  id: string
+  name: string
+  type: 'selection' | 'wizard' | 'traditional'
+  description: string
+  order?: number
+}
+
+export interface FlowConfig {
+  type: 'linear' | 'selection' | 'wizard' | 'hybrid' | 'single'
+  navigation?: 'stepped' | 'wizard' | 'free-form' | 'sections' | string
+  selectionStep?: {
+    stepId: string
+    fieldName: string
+  }
+  phases?: FlowPhase[]
 }
 
 export interface FormConfig {
   metadata: {
     id: string
     name: string
-    formType: 'APPLICATION_FORM' | 'MULTI_FLOW_FORM' | string
   }
+  // New unified flow configuration (preferred)
+  flowConfig?: FlowConfig
   steps: FormStep[]
   flowSelection?: { step: string; field: string }
   arrayTemplates?: Record<string, {

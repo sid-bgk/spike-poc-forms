@@ -32,7 +32,16 @@ export function createPpfRetailWizardConfig(overrides = {}) {
       name: "PPF Retail Wizard Flow",
       version: "1.0.0",
       description: "Park Place Finance retail flow with question wizard followed by traditional steps",
-      formType: "WIZARD_FLOW_FORM"
+    },
+    // New unified flow configuration (Phase 1)
+    flowConfig: {
+      type: "wizard",
+      navigation: "wizard",
+      phases: [
+        { id: "phase1", name: "Loan Type Selection", type: "selection", description: "Choose loan program" },
+        { id: "phase2", name: "Question Wizard", type: "wizard", description: "Quick qualifying questions" },
+        { id: "phase3", name: "Traditional Form Steps", type: "traditional", description: "Complete application" },
+      ],
     },
     flowPhases: {
       phase1: {
@@ -71,17 +80,7 @@ export function createPpfRetailWizardConfig(overrides = {}) {
       propertyInformationStep,
       borrowerInformationStep
     ],
-    navigation: {
-      type: "wizard",
-      allowBackward: true,
-      allowSkipping: false,
-      showProgress: true,
-      completionRequired: true,
-      phaseNavigation: {
-        allowPhaseSkipping: false,
-        showPhaseProgress: true
-      }
-    },
+    // Navigation now implied via flowConfig; omit legacy root-level navigation
     validation: {
       globalRules: [
         {
@@ -94,17 +93,7 @@ export function createPpfRetailWizardConfig(overrides = {}) {
       ]
     },
     transformations: TRANSFORMATIONS,
-    wizardFlow: {
-      enablePrefillPropagation: true,
-      questionStepType: "question",
-      traditionalStepType: "traditional",
-      selectionStepType: "selection",
-      phases: ["phase1", "phase2", "phase3"],
-      pricingIntegration: {
-        showPricingOnQuestions: true,
-        pricingSteps: ["phase2", "phase3"]
-      }
-    }
+    // Retain transformations only
   };
 
   return mergeConfigs(baseConfig, overrides);

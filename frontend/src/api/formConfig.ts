@@ -27,6 +27,27 @@ export interface FormStep {
   required?: boolean
   conditions?: any[]
   fields: FormField[]
+  // Optional metadata used by wizard flows
+  stepType?: string
+  phase?: string
+}
+
+export interface FlowPhase {
+  id: string
+  name: string
+  type: 'selection' | 'wizard' | 'traditional'
+  description: string
+  order?: number
+}
+
+export interface FlowConfig {
+  type: 'linear' | 'selection' | 'wizard' | 'hybrid' | 'single'
+  navigation?: 'stepped' | 'wizard' | 'free-form' | 'sections' | string
+  selectionStep?: {
+    stepId: string
+    fieldName: string
+  }
+  phases?: FlowPhase[]
 }
 
 export interface FormConfig {
@@ -35,8 +56,9 @@ export interface FormConfig {
     name: string
     version?: string
     description?: string
-    formType: 'APPLICATION_FORM' | 'MULTI_FLOW_FORM' | string
   }
+  // New unified flow configuration (preferred)
+  flowConfig?: FlowConfig
   steps: FormStep[]
   flowSelection?: { step: string; field: string }
   arrayTemplates?: Record<string, {
@@ -54,13 +76,6 @@ export interface FormConfig {
       arrayIndex?: boolean
     }>
   }>
-  navigation?: {
-    type: string
-    allowBackward: boolean
-    allowSkipping: boolean
-    showProgress: boolean
-    completionRequired: boolean
-  }
   validation?: {
     globalRules?: any[]
   }
@@ -68,6 +83,14 @@ export interface FormConfig {
     inbound: Record<string, string>
     outbound: Record<string, string>
   }
+}
+
+export interface FormMetadataSummary {
+  id: string
+  name: string
+  description?: string
+  version?: string
+  flowConfig?: { type?: string; navigation?: string }
 }
 
 export async function fetchFormConfig(formId: string): Promise<FormConfig> {
@@ -84,4 +107,16 @@ export async function fetchFormConfig(formId: string): Promise<FormConfig> {
   }
 
   return result.data
+}
+
+export async function fetchAllForms(): Promise<FormMetadataSummary[]> {
+  const response = await fetch('http://localhost:3001/api/forms')
+  if (!response.ok) {
+    throw new Error(`Failed to fetch forms: ${response.status} ${response.statusText}`)
+  }
+  const result = await response.json()
+  if (!result.success) {
+    throw new Error('API returned error: ' + (result.error || 'Unknown error'))
+  }
+  return result.data as FormMetadataSummary[]
 }

@@ -19,7 +19,15 @@ export function createPpfBrokerCompleteConfig(overrides = {}) {
       name: "PPF Broker All Loan Types",
       version: "1.0.0",
       description: "Multi-flow form supporting DSCR and RTL loan types with dynamic borrower arrays",
-      formType: "MULTI_FLOW_FORM"
+    },
+    // New unified flow configuration (Phase 1: added alongside legacy fields)
+    flowConfig: {
+      type: "selection",
+      navigation: "stepped",
+      selectionStep: {
+        stepId: "loan-type-selection",
+        fieldName: "loanTypeName",
+      },
     },
     flowSelection: {
       step: "loan-type-selection",
@@ -153,13 +161,6 @@ export function createPpfBrokerCompleteConfig(overrides = {}) {
           }
         ]
       }
-    },
-    navigation: {
-      type: "stepped",
-      allowBackward: true,
-      allowSkipping: false,
-      showProgress: true,
-      completionRequired: true
     },
     transformations: TRANSFORMATIONS
   };

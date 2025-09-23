@@ -45,6 +45,8 @@ export const FIELD_TYPES = {
   PHONE: "phone",
   PASSWORD: "password",
   DROPDOWN: "dropdown",
+  OPTIONS: "options",
+  OPTIONS_CARDS: "options_cards",
   RADIO: "radio",
   CHECKBOX: "checkbox",
   DATE: "date",
