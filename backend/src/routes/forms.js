@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const { validateFormSubmission } = require('../middleware/validateFormSubmission');
 
 const router = express.Router();
 
@@ -144,23 +145,26 @@ router.post('/:formId/generate', async (req, res) => {
 
 /**
  * POST /api/forms/:formId/submit
- * Handle form submission and log the response
+ * Handle form submission with validation and log the response
  */
-router.post('/:formId/submit', (req, res) => {
+router.post('/:formId/submit', validateFormSubmission, (req, res) => {
   try {
     const { formId } = req.params;
-    const payload = req.body;
+    const originalPayload = req.body;
+    const validatedData = req.validatedFormData;
 
     console.log('=== FORM SUBMISSION ===');
     console.log('Form ID:', formId);
-    console.log('Payload:', JSON.stringify(payload, null, 2));
+    console.log('Original Payload:', JSON.stringify(originalPayload, null, 2));
+    console.log('Validated Data:', JSON.stringify(validatedData, null, 2));
     console.log('Timestamp:', new Date().toISOString());
     console.log('========================');
 
     res.json({
       success: true,
-      message: 'Form submission received and logged',
+      message: 'Form submission received, validated, and logged',
       formId,
+      validatedData,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
