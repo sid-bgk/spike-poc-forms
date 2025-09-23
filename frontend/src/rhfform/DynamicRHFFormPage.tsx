@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useParams, Link } from 'react-router-dom'
 import jsonLogic from 'json-logic-js'
-import { fetchFormConfig } from '../api/formConfig'
+import { fetchFormConfig, submitForm } from '../api/formConfig'
 import type { FormConfig as ApiFormConfig } from '../api/formConfig'
 import { RHFConfigFormRenderer } from './RHFConfigFormRenderer'
 
@@ -52,9 +52,20 @@ export function DynamicRHFFormPage() {
   }, [formId])
 
   const handleSubmit = async (data: Record<string, any>) => {
-    console.log('RHF submitted:', data)
-    await new Promise((r) => setTimeout(r, 500))
-    alert('RHF submitted! Check console for payload.')
+    try {
+      console.log('RHF submitting:', { formId, data })
+
+      if (!formId) {
+        throw new Error('Form ID is required for submission')
+      }
+
+      const result = await submitForm(formId, data)
+      console.log('Form submission result:', result)
+      alert(`Form submitted successfully! Check console for details.\nTimestamp: ${result.timestamp}`)
+    } catch (error) {
+      console.error('Form submission error:', error)
+      alert(`Form submission failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   if (loading) {

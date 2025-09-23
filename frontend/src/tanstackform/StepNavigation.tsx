@@ -13,6 +13,7 @@ export function StepNavigation({
   onStepClick,
   steps,
   isSubmitting = false,
+  isSaving = false,
   onSubmit
 }: StepNavigationProps) {
   return (
@@ -71,7 +72,7 @@ export function StepNavigation({
           type="button"
           variant="outline"
           onClick={onPrevious}
-          disabled={!canGoPrevious || isSubmitting}
+          disabled={!canGoPrevious || isSubmitting || isSaving}
         >
           Previous
         </Button>
@@ -82,6 +83,8 @@ export function StepNavigation({
               type="button"
               onClick={onNext}
               disabled={!canGoNext || isSubmitting}
+              loading={isSaving}
+              loadingText="Saving..."
             >
               Next
             </Button>
@@ -90,16 +93,20 @@ export function StepNavigation({
               <Button
                 type="button"
                 onClick={onSubmit}
-                disabled={!canGoNext || isSubmitting}
+                disabled={!canGoNext || isSubmitting || isSaving}
+                loading={isSubmitting}
+                loadingText="Submitting..."
               >
-                {isSubmitting ? "Submitting..." : "Submit"}
+                Submit
               </Button>
             ) : (
               <Button
                 type="submit"
-                disabled={!canGoNext || isSubmitting}
+                disabled={!canGoNext || isSubmitting || isSaving}
+                loading={isSubmitting}
+                loadingText="Submitting..."
               >
-                {isSubmitting ? "Submitting..." : "Submit"}
+                Submit
               </Button>
             )
           )}

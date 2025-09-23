@@ -1,33 +1,9 @@
 const express = require('express');
-const path = require('path');
+const { getConfigById, getAllConfigs } = require('../services/FormService');
+const { validateFormSubmission } = require('../middleware/validateFormSubmission');
+const { validateStepSubmission } = require('../middleware/validateStepSubmission');
 
 const router = express.Router();
-
-// Import the centralized form configuration registry
-let formConfigModule;
-
-/**
- * Load form configurations using the centralized registry
- */
-const loadFormConfigurations = async () => {
-  try {
-    const configsIndexPath = path.join(__dirname, '../../configs/forms/index.js');
-    const moduleUrl = `file://${configsIndexPath.replace(/\\/g, '/')}`;
-
-    formConfigModule = await import(moduleUrl);
-
-    const formIds = formConfigModule.getFormIds();
-    console.log(`Loaded ${formIds.length} form configurations: ${formIds.join(', ')}`);
-  } catch (error) {
-    console.error('Error loading form configurations:', error.message);
-    throw error;
-  }
-};
-
-// Initialize configurations on module load
-loadFormConfigurations().catch(err => {
-  console.error('Error initializing form configurations:', err);
-});
 
 /**
  * GET /api/forms
@@ -35,14 +11,7 @@ loadFormConfigurations().catch(err => {
  */
 router.get('/', (req, res) => {
   try {
-    if (!formConfigModule) {
-      return res.status(500).json({
-        success: false,
-        error: 'Form configurations not loaded'
-      });
-    }
-
-    const forms = formConfigModule.getFormMetadata();
+    const forms = getAllConfigs();
 
     res.json({
       success: true,
@@ -63,15 +32,8 @@ router.get('/', (req, res) => {
  */
 router.get('/:formId', (req, res) => {
   try {
-    if (!formConfigModule) {
-      return res.status(500).json({
-        success: false,
-        error: 'Form configurations not loaded'
-      });
-    }
-
     const { formId } = req.params;
-    const config = formConfigModule.getFormConfig(formId);
+    const config = getConfigById(formId);
 
     if (!config) {
       return res.status(404).json({
@@ -93,48 +55,31 @@ router.get('/:formId', (req, res) => {
 });
 
 /**
- * POST /api/forms/:formId/generate
- * Generate form configuration with custom overrides
+ * POST /api/forms/:formId/submit
+ * Handle form submission with validation and log the response
  */
-router.post('/:formId/generate', async (req, res) => {
+router.post('/:formId/submit', validateFormSubmission, (req, res) => {
   try {
-    if (!formConfigModule) {
-      return res.status(500).json({
-        success: false,
-        error: 'Form configurations not loaded'
-      });
-    }
-
     const { formId } = req.params;
-    const overrides = req.body || {};
+    const originalPayload = req.body;
+    const validatedData = req.validatedFormData;
 
-    // Try to create custom configuration with factory function
-    const customConfig = formConfigModule.createFormConfig(formId, overrides);
+    console.log('=== FORM SUBMISSION ===');
+    console.log('Form ID:', formId);
+    console.log('Original Payload:', JSON.stringify(originalPayload, null, 2));
+    console.log('Validated Data:', JSON.stringify(validatedData, null, 2));
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('========================');
 
-    if (customConfig) {
-      res.json({
-        success: true,
-        data: customConfig,
-        message: `Generated custom configuration for ${formId} with overrides`
-      });
-    } else {
-      // Fallback to base configuration
-      const baseConfig = formConfigModule.getFormConfig(formId);
-
-      if (!baseConfig) {
-        return res.status(404).json({
-          success: false,
-          error: `Form configuration not found: ${formId}`
-        });
-      }
-
-      res.json({
-        success: true,
-        data: baseConfig,
-        message: `Returned base configuration for ${formId} (no factory function available)`
-      });
-    }
+    res.json({
+      success: true,
+      message: 'Form submission received, validated, and logged',
+      formId,
+      validatedData,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
+    console.error('Error processing form submission:', error);
     res.status(500).json({
       success: false,
       error: error.message
@@ -143,25 +88,36 @@ router.post('/:formId/generate', async (req, res) => {
 });
 
 /**
- * POST /api/forms/reload
- * Reload form configurations from disk (useful for development)
+ * POST /api/forms/:formId/save-progress
+ * Handle step-wise form progress saving with validation
  */
-router.post('/reload', async (req, res) => {
+router.post('/:formId/save-progress', validateStepSubmission, (req, res) => {
   try {
-    // Clear module cache for hot reload
-    const configsIndexPath = path.join(__dirname, '../../configs/forms/index.js');
-    const moduleUrl = `file://${configsIndexPath.replace(/\\/g, '/')}`;
+    const { formId } = req.params;
+    const { stepId, sessionId } = req.body;
+    const validatedData = req.validatedStepData;
+    const step = req.step;
 
-    // Reload the module
-    await loadFormConfigurations();
-
-    const formIds = formConfigModule ? formConfigModule.getFormIds() : [];
+    console.log('=== STEP SAVE ===');
+    console.log('Form ID:', formId);
+    console.log('Step ID:', stepId);
+    console.log('Session ID:', sessionId);
+    console.log('Step Name:', step.name);
+    console.log('Validated Data:', JSON.stringify(validatedData, null, 2));
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('=================');
 
     res.json({
       success: true,
-      message: `Reloaded ${formIds.length} form configurations: ${formIds.join(', ')}`
+      message: 'Step progress saved successfully',
+      formId,
+      stepId,
+      stepName: step.name,
+      validatedData,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
+    console.error('Error processing step save:', error);
     res.status(500).json({
       success: false,
       error: error.message

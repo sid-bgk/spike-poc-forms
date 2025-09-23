@@ -1,6 +1,7 @@
 import * as React from "react"
 import { FormField } from "./FormField"
 import { StepNavigation } from "./StepNavigation"
+import { SaveStatusIndicator } from "./SaveStatusIndicator"
 import { cn } from "@/lib/utils"
 import type { FormConfig, FormData } from "./types"
 import { useConfigFormEngine } from './engine/useConfigFormEngine'
@@ -23,6 +24,9 @@ export function ConfigFormRenderer({
   const engine = useConfigFormEngine({ config, onSubmit, defaultValues })
   const { form, currentStep, totalSteps, handleSubmit } = engine
 
+  // Show save UI only if enabled in config
+  const showSaveUI = config.saveConfig?.enabled
+
   return (
     <div className={cn("w-full max-w-4xl mx-auto space-y-8", className)}>
       {/* Form Header */}
@@ -32,6 +36,15 @@ export function ConfigFormRenderer({
           Step {engine.stepNavigationProps.currentStep + 1} of {totalSteps}: {currentStep.name}
         </p>
         <p className="text-xs text-muted-foreground">Renders: {renderCountRef.current}</p>
+
+        {/* Step Save Indicator */}
+        {showSaveUI && (
+          <SaveStatusIndicator
+            saveState={engine.saveState}
+            onManualSave={() => engine.saveStepData(currentStep.id, form.state.values)}
+            showManualSave={config.saveConfig?.allowManualSave}
+          />
+        )}
       </div>
 
       {/* Form */}

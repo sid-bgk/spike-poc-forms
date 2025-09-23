@@ -34,6 +34,8 @@ export interface FormStep {
   // Optional metadata used by wizard flows
   stepType?: string
   phase?: string
+  // Step-based save configuration
+  saveRequired?: boolean // defaults to true
 }
 
 export interface FlowPhase {
@@ -54,6 +56,19 @@ export interface FlowConfig {
   phases?: FlowPhase[]
 }
 
+export interface SaveConfig {
+  enabled: boolean
+  saveOnStepComplete: boolean
+  showSaveStatus?: boolean
+  allowManualSave?: boolean
+}
+
+export interface SaveState {
+  isSaving: boolean
+  lastSaveTime: Date | null
+  saveError: string | null
+}
+
 export interface FormConfig {
   metadata: {
     id: string
@@ -61,6 +76,7 @@ export interface FormConfig {
   }
   // New unified flow configuration (preferred)
   flowConfig?: FlowConfig
+  saveConfig?: SaveConfig
   steps: FormStep[]
   flowSelection?: { step: string; field: string }
   arrayTemplates?: Record<string, {
@@ -90,6 +106,7 @@ export interface StepNavigationProps {
   onStepClick: (stepIndex: number) => void
   steps: FormStep[]
   isSubmitting?: boolean
+  isSaving?: boolean
   onSubmit?: () => void
 }
 
