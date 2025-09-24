@@ -67,6 +67,58 @@
               "$ref": "../../shared-fields/validation-rules.json#/phoneUS"
             }
           ]
+        },
+        {
+          "id": "lien_Position",
+          "name": "Lien Position",
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the property city"
+            }
+          ],
+          "options": [
+            {
+              "value": "firstLien",
+              "label": "First Lien"
+            },
+            {
+              "value": "secondLien",
+              "label": "Second Lien"
+            }
+          ]
+        },
+        {
+          "id": "mortgage_type",
+          "name": "Mortgage Type",
+          "validation": [
+            {
+              "rule": "required",
+              "message": "Please enter the property city"
+            }
+          ],
+          "options": [
+            {
+              "value": "na",
+              "label": "Non Agency"
+            },
+            {
+              "value": "fha",
+              "label": "FHA"
+            },
+            {
+              "value": "va",
+              "label": "VA"
+            },
+            {
+              "value": "ces",
+              "label": "CES"
+            },
+            {
+              "value": "heloc",
+              "label": "HELOC"
+            }
+          ]
         }
       ]
     },
