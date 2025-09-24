@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import jsonLogic from 'json-logic-js'
 import { fetchFormConfig, submitForm } from '../api/formConfig'
 import type { FormConfig as ApiFormConfig } from '../api/formConfig'
-import { ConfigFormRenderer } from './ConfigFormRenderer'
+import { RHFConfigFormRenderer } from './RHFConfigFormRenderer'
 import { WizardFlowRenderer } from './WizardFlowRenderer'
 import { VerticalConfigFormRenderer } from './VerticalConfigFormRenderer'
 import { SinglePageFormRenderer } from './SinglePageFormRenderer'
@@ -80,7 +80,7 @@ export function DynamicFormPage() {
 
   const handleSubmit = async (data: Record<string, any>) => {
     try {
-      console.log('TanStack submitting:', { formId, data })
+      console.log('RHF submitting:', { formId, data })
 
       if (!formId) {
         throw new Error('Form ID is required for submission')
@@ -136,7 +136,7 @@ export function DynamicFormPage() {
   if (behavior === 'linear') {
     return (
       <div className="min-h-screen bg-background p-6">
-        <ConfigFormRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />
+        <VerticalConfigFormRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />
       </div>
     )
   }
@@ -178,7 +178,7 @@ export function DynamicFormPage() {
     const pruned = selectionFieldName ? pruneConfigByFlow(config, selectionFieldName, selectedFlow) : config
     return (
       <div className="min-h-screen bg-background p-6">
-        <ConfigFormRenderer config={pruned as any} onSubmit={handleSubmit} defaultValues={{ [selectionFieldName!]: selectedFlow }} className="max-w-6xl" />
+        <RHFConfigFormRenderer config={pruned as any} onSubmit={handleSubmit} defaultValues={{ [selectionFieldName!]: selectedFlow }} className="max-w-6xl" />
       </div>
     )
   }
@@ -202,8 +202,7 @@ export function DynamicFormPage() {
   // Wizard/hybrid fallback to horizontal
   return (
     <div className="min-h-screen bg-background p-6">
-      <ConfigFormRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />
+      <RHFConfigFormRenderer config={config as any} onSubmit={handleSubmit} defaultValues={{}} className="max-w-6xl" />
     </div>
   )
 }
-

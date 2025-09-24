@@ -45,7 +45,7 @@ export function RHFConfigFormRenderer({
 
             <div className="grid grid-cols-12 gap-4">
               {engine.visibleFields.map((field) => (
-                <RHFFormField key={field.id} field={field} />
+                <RHFFormField key={field.id} field={field} onAutoTrigger={engine.handleAutoTrigger} />
               ))}
             </div>
           </div>

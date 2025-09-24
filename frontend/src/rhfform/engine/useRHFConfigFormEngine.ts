@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form'
 import jsonLogic from 'json-logic-js'
-import type { RHFFormEngine, RHFFormEngineOptions, FormData } from './types'
+import type { RHFFormEngine, RHFFormEngineOptions, FormData, SaveState } from './types'
 import type { FormConfig, FormStep, FormField } from '../../tanstackform/types'
 
 function buildAugmentedSteps(config: FormConfig): { steps: FormStep[]; dynamicArraySteps: Map<string, { stepId: string; insertAfterIndex: number }> } {
@@ -66,9 +66,16 @@ function expandArrayTemplateFields(templateName: string, config: FormConfig, val
   return fields
 }
 
-export function useRHFConfigFormEngine({ config, onSubmit, defaultValues = {} }: RHFFormEngineOptions): RHFFormEngine {
+export function useRHFConfigFormEngine({ config, onSubmit, defaultValues = {}, onSave }: RHFFormEngineOptions): RHFFormEngine {
   const [currentStepIndex, setCurrentStepIndex] = React.useState(0)
   const { steps: augmentedSteps, dynamicArraySteps } = React.useMemo(() => buildAugmentedSteps(config as FormConfig), [config])
+
+  // Save state management
+  const [saveState, setSaveState] = React.useState<SaveState>({
+    isSaving: false,
+    lastSaveTime: null,
+    saveError: null,
+  })
 
   // Build default values from config + incoming defaults
   const formDefaultValues = React.useMemo(() => {
@@ -243,6 +250,38 @@ export function useRHFConfigFormEngine({ config, onSubmit, defaultValues = {} }:
     })()
   }, [methods, onSubmit])
 
+  // Save step data function
+  const saveStepData = React.useCallback(async (stepId: string, stepData: FormData) => {
+    if (!onSave) return
+
+    setSaveState(prev => ({ ...prev, isSaving: true, saveError: null }))
+
+    try {
+      await onSave(stepId, stepData)
+      setSaveState(prev => ({
+        ...prev,
+        isSaving: false,
+        lastSaveTime: new Date(),
+        saveError: null,
+      }))
+    } catch (error) {
+      setSaveState(prev => ({
+        ...prev,
+        isSaving: false,
+        saveError: error instanceof Error ? error.message : 'Failed to save progress',
+      }))
+    }
+  }, [onSave])
+
+  // Handle auto-trigger functionality (unidirectional)
+  const handleAutoTrigger = React.useCallback(
+    (sourceField: string, sourceValue: any, targetField: string, targetValue: any) => {
+      // Set the target field value using RHF setValue without triggering validation
+      methods.setValue(targetField, targetValue, { shouldValidate: false, shouldDirty: true })
+    },
+    [methods]
+  )
+
   const stepNavigationProps = React.useMemo(
     () => ({
       currentStep: currentVisiblePos,
@@ -254,9 +293,10 @@ export function useRHFConfigFormEngine({ config, onSubmit, defaultValues = {} }:
       onStepClick: goTo,
       steps: visibleSteps,
       isSubmitting: methods.formState.isSubmitting,
+      isSaving: saveState.isSaving,
       onSubmit: submit,
     }),
-    [currentVisiblePos, totalSteps, next, previous, goTo, visibleSteps, methods.formState.isSubmitting, submit],
+    [currentVisiblePos, totalSteps, next, previous, goTo, visibleSteps, methods.formState.isSubmitting, saveState.isSaving, submit],
   )
 
   const isFieldVisible = React.useCallback(
@@ -280,6 +320,9 @@ export function useRHFConfigFormEngine({ config, onSubmit, defaultValues = {} }:
     goTo,
     handleSubmit,
     submit,
+    saveState,
+    saveStepData,
+    handleAutoTrigger,
     stepNavigationProps,
   }
 }

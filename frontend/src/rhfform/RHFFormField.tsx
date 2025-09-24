@@ -12,9 +12,10 @@ import type { FormField as FormFieldType } from '../tanstackform/types'
 
 interface Props {
   field: FormFieldType
+  onAutoTrigger?: (sourceField: string, sourceValue: any, targetField: string, targetValue: any) => void
 }
 
-export function RHFFormField({ field }: Props) {
+export function RHFFormField({ field, onAutoTrigger }: Props) {
   const { register, control, formState: { errors } } = useFormContext()
 
   const error = (errors as any)?.[field.name]?.message as string | undefined
@@ -23,6 +24,21 @@ export function RHFFormField({ field }: Props) {
   const rules = React.useMemo(() => buildRules(field), [field])
 
   const showLabel = field.type !== 'checkbox'
+
+  // Helper function to handle field changes with auto-triggers
+  const handleChangeWithAutoTrigger = React.useCallback((newValue: any, onChange: (value: any) => void) => {
+    // First, update the current field value
+    onChange(newValue)
+
+    // Then check for auto-triggers (only on user interaction)
+    if (field.autoTriggers && onAutoTrigger) {
+      const trigger = field.autoTriggers[newValue]
+      if (trigger) {
+        // Execute the auto-trigger
+        onAutoTrigger(field.name, newValue, trigger.field, trigger.value)
+      }
+    }
+  }, [field, onAutoTrigger])
 
   return (
     <div className={cn('space-y-2', getGridClasses(field.grid))}>
@@ -124,7 +140,7 @@ export function RHFFormField({ field }: Props) {
                       name={ctl.name}
                       value={option.value}
                       checked={ctl.value === option.value}
-                      onChange={() => ctl.onChange(option.value)}
+                      onChange={() => handleChangeWithAutoTrigger(option.value, ctl.onChange)}
                       onBlur={ctl.onBlur}
                       className="h-4 w-4 border-gray-300 text-primary focus:ring-2 focus:ring-primary"
                     />
