@@ -13,17 +13,20 @@
 const {
   createTransformationEngine,
   defaultEngine,
-} = require("./functional-transform-engine");
+} = require("../core/engines/transformation-engine");
 const fs = require("fs");
 const path = require("path");
 
-// Load test configurations
-const ppfBrokerConfig = JSON.parse(
-  fs.readFileSync(
-    path.join(__dirname, "configs/forms-json/ppf-broker-complete.json"),
-    "utf8"
+// Load transformation configurations only
+const ppfBrokerConfig = {
+  metadata: { id: "ppf-broker-complete", pattern: "ppfBroker" },
+  transformations: JSON.parse(
+    fs.readFileSync(
+      path.join(__dirname, "../configs/forms-json/ppf-broker-complete/transformation.json"),
+      "utf8"
+    )
   )
-);
+};
 
 /**
  * Test configurations for different SAAF patterns
@@ -285,15 +288,17 @@ function runAllTests() {
   console.log("-".repeat(60));
 
   try {
+    // First, apply the retail pattern to prepare the data
     const retailData = engine.patterns.retail(
       testData.retailScenario.loanData,
       testData.retailScenario.context
     );
 
+    // Then transform using the prepared data
     const retailResult = engine.transform(
       testConfigs.retail,
-      testData.retailScenario.loanData,
-      testData.retailScenario.context
+      retailData.loanData,
+      retailData  // Use the prepared data as context
     );
 
     console.log("✅ Retail transformation successful:");
@@ -312,14 +317,17 @@ function runAllTests() {
   console.log("-".repeat(60));
 
   try {
+    // First, apply the ppfBroker pattern to prepare the data
     const ppfBrokerData = engine.patterns.ppfBroker(
       testData.ppfBrokerScenario.loanData,
       testData.ppfBrokerScenario.context
     );
+
+    // Then transform using the prepared data
     const ppfBrokerResult = engine.transform(
       testConfigs.ppfBroker,
-      testData.ppfBrokerScenario.loanData,
-      testData.ppfBrokerScenario.context
+      ppfBrokerData.loanData,
+      ppfBrokerData  // Use the prepared data as context
     );
 
     console.log("✅ PPF Broker transformation successful:");
@@ -347,10 +355,17 @@ function runAllTests() {
   console.log("-".repeat(60));
 
   try {
-    const oaktreeResult = engine.transform(
-      testConfigs.oaktree,
+    // First, apply the oaktree pattern to prepare the data
+    const oaktreeData = engine.patterns.oaktree(
       testData.oaktreeScenario.loanData,
       testData.oaktreeScenario.context
+    );
+
+    // Then transform using the prepared data
+    const oaktreeResult = engine.transform(
+      testConfigs.oaktree,
+      oaktreeData.loanData,
+      oaktreeData  // Use the prepared data as context
     );
 
     console.log("✅ Oaktree transformation successful:");

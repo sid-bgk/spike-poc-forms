@@ -4,3 +4,5 @@ node_modules/
 
 # Old backup folder
 old_backend_backup/
+
+.claude/

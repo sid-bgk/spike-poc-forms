@@ -1,15 +1,21 @@
+/**
+ * Functional Array-Based Transformation Engine
+ *
+ * Converts complex hardcoded transformation functions into simple config-driven functional approach.
+ * Supports all SAAF transformation patterns:
+ * - transformLoanDataToForm (retail)
+ * - mapLoanDataToFormValueForPPFBroker (PPF broker)
+ * - mapLoanDataToFormValueForPPFAdditionalQuestions (PPF additional)
+ * - oaktreeTransformToFormData (Oaktree)
+ * - oaktreeFundingTransformToFormData (Oaktree quick pricer)
+ * - All mapToApplicationForm variants (form → database)
+ */
+
 // Simple get function to avoid lodash dependency
 function get(obj, path, defaultValue = undefined) {
   if (!obj || !path) return defaultValue;
 
-  // Handle quoted keys like ["saaf:DEAL_EXTENSION"] and array indices
-  const keys = path
-    .replace(/\[\"([^"]+)\"\]/g, ".$1") // Convert ["quoted"] to .quoted
-    .replace(/\[\'([^']+)\'\]/g, ".$1") // Convert ['quoted'] to .quoted
-    .replace(/\[(\d+)\]/g, ".$1") // Convert [0] to .0
-    .split(".")
-    .filter((key) => key !== ""); // Remove empty strings
-
+  const keys = path.replace(/\[(\d+)\]/g, ".$1").split(".");
   let result = obj;
 
   for (const key of keys) {
@@ -34,13 +40,11 @@ const resolvePath = (data, path) => {
 
 // Condition checking functions
 const conditionCheckers = {
-  notEmpty: (value) => Boolean(value && value !== ""),
+  notEmpty: (value) => value && value !== "",
   arrayNotEmpty: (value) => Array.isArray(value) && value.length > 0,
   exists: (value) => value !== undefined && value !== null,
   objectNotEmpty: (value) =>
-    Boolean(
-      value && typeof value === "object" && Object.keys(value).length > 0
-    ),
+    value && typeof value === "object" && Object.keys(value).length > 0,
   default: (value) => value !== undefined && value !== null,
 };
 
@@ -258,26 +262,18 @@ const reverseTransform = (config, formData, context = {}) => {
  * Helper function to set nested object values
  */
 const setNestedValue = (obj, path, value) => {
-  const keys = path.replace(/\[(\d+)\]/g, ".$1").split(".");
+  const keys = path.split(".");
   let current = obj;
 
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
-    const nextKey = keys[i + 1];
-
-    // Check if the next key is a number (array index)
-    const isNextKeyArrayIndex = /^\d+$/.test(nextKey);
-
     if (!(key in current)) {
-      // Create array if next key is array index, object otherwise
-      current[key] = isNextKeyArrayIndex ? [] : {};
+      current[key] = {};
     }
-
     current = current[key];
   }
 
-  const finalKey = keys[keys.length - 1];
-  current[finalKey] = value;
+  current[keys[keys.length - 1]] = value;
 };
 
 /**
