@@ -1,5 +1,5 @@
-const { validateFormData } = require("../utils/zodSchemaGenerator");
-const { getConfigById } = require("../services/FormService");
+const { validateFormData } = require("../../core/utils/zodSchemaGenerator");
+const { getConfigById } = require("../../core/services/form-service");
 
 /**
  * Middleware to validate step submission data against form configuration

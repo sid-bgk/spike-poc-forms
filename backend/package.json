@@ -2,10 +2,10 @@
   "name": "saaf-form-engine-poc",
   "version": "1.0.0",
   "description": "Configuration server for SAAF form definitions",
-  "main": "src/server.js",
+  "main": "api/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js",
     "test": "jest",
     "test:watch": "jest --watch"
   },

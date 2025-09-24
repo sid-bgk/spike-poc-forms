@@ -1,5 +1,5 @@
 const express = require('express');
-const { getConfigById, getAllConfigs } = require('../services/FormService');
+const { getConfigById, getAllConfigs } = require('../../core/services/form-service');
 const { validateFormSubmission } = require('../middleware/validateFormSubmission');
 const { validateStepSubmission } = require('../middleware/validateStepSubmission');
 
