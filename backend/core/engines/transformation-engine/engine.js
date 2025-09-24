@@ -1,3 +1,5 @@
+const patternRegistry = require("./patterns");
+
 // Simple get function to avoid lodash dependency
 function get(obj, path, defaultValue = undefined) {
   if (!obj || !path) return defaultValue;
@@ -336,86 +338,14 @@ const createTransformationEngine = (customTransformers = {}) => {
     transformers: allTransformers,
 
     // Support for specific SAAF patterns
-    patterns: {
-      // PPF Broker pattern: complex multi-source with pricing data
-      ppfBroker: (loanData, context) => {
-        // Enhanced data structure for PPF broker forms
-        const apiData = get(
-          loanData,
-          `DEAL.EXTENSION.OTHER["saaf:DEAL_EXTENSION"]["saaf:ApplicationData"]`,
-          {}
-        );
-        const applicationData = get(apiData, "applicationData", {});
+    patterns: patternRegistry.patterns,
 
-        let additionalInfo = get(applicationData, "additionalInfo", {});
-        if (Object.keys(additionalInfo).length === 0) {
-          additionalInfo = get(context, "additionalInfo", {});
-        }
-
-        return {
-          loanData,
-          context,
-          apiData,
-          applicationData,
-          additionalInfo,
-          borrowers: get(
-            apiData,
-            "borrowers",
-            get(additionalInfo, "borrowers", [])
-          ),
-          propertyAddress: get(
-            apiData,
-            "propertyAddress",
-            get(additionalInfo, "propertyAddress", {})
-          ),
-          loanInformation: get(additionalInfo, "loanInformation", {}),
-          rentAndExpanses: get(additionalInfo, "rentAndExpanses", {}),
-          repairAndRehab: get(additionalInfo, "repairAndRehab", {}),
-          pricing: get(additionalInfo, "pricing", {}),
-          primaryBorrower: context.primaryBorrower || {},
-        };
-      },
-
-      // Retail pattern: simpler structure with primary borrower focus
-      retail: (loanData, context) => {
-        const borrowers = get(
-          loanData,
-          `DEAL.EXTENSION.OTHER["saaf:DEAL_EXTENSION"]["saaf:ApplicationData"].borrowers`,
-          []
-        );
-        const primaryBorrower =
-          borrowers.find((b) => b.borrowerType === "primary") ||
-          borrowers[0] ||
-          context.primaryBorrower;
-
-        return {
-          loanData,
-          context,
-          borrowers,
-          primaryBorrower,
-          propertyAddress: get(
-            loanData,
-            `DEAL.EXTENSION.OTHER["saaf:DEAL_EXTENSION"]["saaf:ApplicationData"].propertyAddress`,
-            {}
-          ),
-          applicationData: get(
-            loanData,
-            `DEAL.EXTENSION.OTHER["saaf:DEAL_EXTENSION"]["saaf:ApplicationData"].applicationData`,
-            {}
-          ),
-        };
-      },
-
-      // Oaktree pattern: common application form structure
-      oaktree: (loanData, context) => {
-        return {
-          loanData,
-          context,
-          // Oaktree-specific data structure
-          ...context,
-        };
-      },
-    },
+    // Pattern management functions
+    registerPattern: patternRegistry.registerPattern,
+    getPattern: patternRegistry.getPattern,
+    getAllPatterns: patternRegistry.getAllPatterns,
+    hasPattern: patternRegistry.hasPattern,
+    getPatternInfo: patternRegistry.getPatternInfo,
   };
 };
 
