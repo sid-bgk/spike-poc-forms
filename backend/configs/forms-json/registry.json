@@ -4,25 +4,29 @@
       "id": "simplified-application-poc",
       "name": "Simplified Loan Application POC",
       "version": "1.0.0",
-      "file": "simplified-application-poc.json"
+      "file": "simplified-application-poc/simplified-application-poc.json",
+      "transformation": "simplified-application-poc/transformation.json"
     },
     {
       "id": "single-page-application",
       "name": "Single Page Application",
       "version": "1.0.0",
-      "file": "single-page-application.json"
+      "file": "single-page-application/single-page-application.json",
+      "transformation": "single-page-application/transformation.json"
     },
     {
       "id": "ppf-broker-complete",
       "name": "PPF Broker All Loan Types",
       "version": "1.0.0",
-      "file": "ppf-broker-complete.json"
+      "file": "ppf-broker-complete/ppf-broker-complete.json",
+      "transformation": "ppf-broker-complete/transformation.json"
     },
     {
       "id": "ppf-retail-wizard",
       "name": "PPF Retail Wizard Flow",
       "version": "1.0.0",
-      "file": "ppf-retail-wizard.json"
+      "file": "ppf-retail-wizard/ppf-retail-wizard.json",
+      "transformation": "ppf-retail-wizard/transformation.json"
     }
   ]
 }

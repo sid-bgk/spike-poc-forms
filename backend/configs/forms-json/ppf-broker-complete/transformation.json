@@ -1,0 +1,377 @@
+{
+  "inbound": {
+    "loanTypeName": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].loanTypeName",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.loanTypeName",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "loanPurpose": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].loanInformation.loanPurpose",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.loanInformation.loanPurpose",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "propertyType": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].loanInformation.propertyType",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.loanInformation.propertyType",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "propertyState": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].propertyAddress.state",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.propertyAddress.state",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "propertyValue": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].loanInformation.propertyValue",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.loanInformation.propertyValue",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.estimatedPropertyValue",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "estimatedCreditScore": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].loanInformation.estimatedCreditScore",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.loanInformation.estimatedCreditScore",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "citizenship": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].loanInformation.citizenship",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.loanInformation.citizenship",
+        "condition": "notEmpty"
+      },
+      {
+        "default": "us_citizen"
+      }
+    ],
+    "applicationType": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].applicationData.applicationType",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.applicationType",
+        "condition": "notEmpty"
+      },
+      {
+        "default": "individual"
+      }
+    ],
+    "numberOfBorrowers": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].numberOfBorrowers",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "additionalInfo.numberOfBorrowers",
+        "condition": "notEmpty"
+      },
+      {
+        "default": 1
+      }
+    ],
+    "rentalUse": [
+      {
+        "path": "additionalInfo.loanInformation.rentalUse",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "monthlyPropertyTaxes": [
+      {
+        "path": "additionalInfo.rentAndExpanses.monthlyPropertyTaxes",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "monthlyInsurance": [
+      {
+        "path": "additionalInfo.rentAndExpanses.monthlyInsurance",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "unit1MonthlyRent": [
+      {
+        "path": "additionalInfo.rentAndExpanses.unitRent[0].rent",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "unit2MonthlyRent": [
+      {
+        "path": "additionalInfo.rentAndExpanses.unitRent[1].rent",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "loanType": [
+      {
+        "path": "additionalInfo.loanType",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "projectsCompleted": [
+      {
+        "path": "additionalInfo.loanInformation.projectCompletedInPast36Month",
+        "condition": "notEmpty"
+      },
+      {
+        "default": "0"
+      }
+    ],
+    "rehabAmount": [
+      {
+        "path": "additionalInfo.repairAndRehab.rehabAmount",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "afterRepairValue": [
+      {
+        "path": "additionalInfo.repairAndRehab.arv",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "constructionBudget": [
+      {
+        "path": "additionalInfo.repairAndRehab.constructionBudget",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "availableLiquidity": [
+      {
+        "path": "additionalInfo.repairAndRehab.availableLiquidity",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "borrowers[].firstName": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+        "type": "arrayField",
+        "field": "firstName",
+        "condition": "arrayNotEmpty"
+      },
+      {
+        "path": "additionalInfo.borrowers",
+        "type": "arrayField",
+        "field": "firstName",
+        "condition": "arrayNotEmpty"
+      },
+      {
+        "path": "primaryBorrower.firstName",
+        "transform": "singleToArray",
+        "condition": "notEmpty"
+      },
+      {
+        "default": []
+      }
+    ],
+    "borrowers[].lastName": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+        "type": "arrayField",
+        "field": "lastName",
+        "condition": "arrayNotEmpty"
+      },
+      {
+        "path": "additionalInfo.borrowers",
+        "type": "arrayField",
+        "field": "lastName",
+        "condition": "arrayNotEmpty"
+      },
+      {
+        "path": "primaryBorrower.lastName",
+        "transform": "singleToArray",
+        "condition": "notEmpty"
+      },
+      {
+        "default": []
+      }
+    ],
+    "borrowers[].email": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+        "type": "arrayField",
+        "field": "email",
+        "condition": "arrayNotEmpty"
+      },
+      {
+        "path": "additionalInfo.borrowers",
+        "type": "arrayField",
+        "field": "email",
+        "condition": "arrayNotEmpty"
+      },
+      {
+        "path": "primaryBorrower.email",
+        "transform": "singleToArray",
+        "condition": "notEmpty"
+      },
+      {
+        "default": []
+      }
+    ],
+    "borrowers[].phone": [
+      {
+        "path": "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers",
+        "type": "arrayField",
+        "field": "phone",
+        "condition": "arrayNotEmpty"
+      },
+      {
+        "path": "additionalInfo.borrowers",
+        "type": "arrayField",
+        "field": "phone",
+        "condition": "arrayNotEmpty"
+      },
+      {
+        "path": "primaryBorrower.phone",
+        "transform": "singleToArray",
+        "condition": "notEmpty"
+      },
+      {
+        "default": []
+      }
+    ]
+  },
+  "outbound": {
+    "loan.type": [
+      {
+        "path": "loanTypeName"
+      }
+    ],
+    "loan.purpose": [
+      {
+        "path": "loanPurpose"
+      }
+    ],
+    "property.type": [
+      {
+        "path": "propertyType"
+      }
+    ],
+    "property.state": [
+      {
+        "path": "propertyState"
+      }
+    ],
+    "property.value": [
+      {
+        "path": "propertyValue"
+      }
+    ],
+    "borrowers[].personal.firstName": [
+      {
+        "path": "borrowers",
+        "type": "arrayField",
+        "field": "firstName"
+      }
+    ],
+    "borrowers[].personal.lastName": [
+      {
+        "path": "borrowers",
+        "type": "arrayField",
+        "field": "lastName"
+      }
+    ],
+    "borrowers[].personal.email": [
+      {
+        "path": "borrowers",
+        "type": "arrayField",
+        "field": "email"
+      }
+    ],
+    "borrowers[].personal.phone": [
+      {
+        "path": "borrowers",
+        "type": "arrayField",
+        "field": "phone"
+      }
+    ],
+    "application.type": [
+      {
+        "path": "applicationType"
+      }
+    ],
+    "application.borrowerCount": [
+      {
+        "path": "numberOfBorrowers"
+      }
+    ]
+  }
+}

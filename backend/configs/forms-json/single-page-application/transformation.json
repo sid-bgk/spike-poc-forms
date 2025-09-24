@@ -1,0 +1,304 @@
+{
+  "inbound": {
+    "first_name": [
+      {
+        "path": "borrower.personal.firstName",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "primaryBorrower.firstName",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "last_name": [
+      {
+        "path": "borrower.personal.lastName",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "primaryBorrower.lastName",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "email": [
+      {
+        "path": "borrower.personal.email",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "primaryBorrower.email",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "mobile": [
+      {
+        "path": "borrower.personal.mobile",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "primaryBorrower.mobile",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "property_city": [
+      {
+        "path": "property.current.city",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "propertyAddress.city",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "property_state": [
+      {
+        "path": "property.current.state",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "propertyAddress.state",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "property_zip": [
+      {
+        "path": "property.current.zip",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "propertyAddress.zip",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "lived_more_than_2_years": [
+      {
+        "path": "property.residencyInfo.livedMoreThan2Years",
+        "condition": "notEmpty"
+      },
+      {
+        "default": "no"
+      }
+    ],
+    "previous_city": [
+      {
+        "path": "property.previous.city",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "previous_state": [
+      {
+        "path": "property.previous.state",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "previous_zip": [
+      {
+        "path": "property.previous.zip",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "application_type": [
+      {
+        "path": "application.type",
+        "condition": "notEmpty"
+      },
+      {
+        "path": "applicationType",
+        "condition": "notEmpty"
+      },
+      {
+        "default": "individual"
+      }
+    ],
+    "joint_property_city": [
+      {
+        "path": "jointBorrower.property.current.city",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "joint_property_state": [
+      {
+        "path": "jointBorrower.property.current.state",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "joint_property_zip": [
+      {
+        "path": "jointBorrower.property.current.zip",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "joint_lived_more_than_2_years": [
+      {
+        "path": "jointBorrower.property.residencyInfo.livedMoreThan2Years",
+        "condition": "notEmpty"
+      },
+      {
+        "default": "no"
+      }
+    ],
+    "joint_previous_city": [
+      {
+        "path": "jointBorrower.property.previous.city",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "joint_previous_state": [
+      {
+        "path": "jointBorrower.property.previous.state",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ],
+    "joint_previous_zip": [
+      {
+        "path": "jointBorrower.property.previous.zip",
+        "condition": "notEmpty"
+      },
+      {
+        "default": ""
+      }
+    ]
+  },
+  "outbound": {
+    "borrower.personal.firstName": [
+      {
+        "path": "first_name"
+      }
+    ],
+    "borrower.personal.lastName": [
+      {
+        "path": "last_name"
+      }
+    ],
+    "borrower.personal.email": [
+      {
+        "path": "email"
+      }
+    ],
+    "borrower.personal.mobile": [
+      {
+        "path": "mobile"
+      }
+    ],
+    "property.current.city": [
+      {
+        "path": "property_city"
+      }
+    ],
+    "property.current.state": [
+      {
+        "path": "property_state"
+      }
+    ],
+    "property.current.zip": [
+      {
+        "path": "property_zip"
+      }
+    ],
+    "property.residencyInfo.livedMoreThan2Years": [
+      {
+        "path": "lived_more_than_2_years"
+      }
+    ],
+    "property.previous.city": [
+      {
+        "path": "previous_city"
+      }
+    ],
+    "property.previous.state": [
+      {
+        "path": "previous_state"
+      }
+    ],
+    "property.previous.zip": [
+      {
+        "path": "previous_zip"
+      }
+    ],
+    "application.type": [
+      {
+        "path": "application_type"
+      }
+    ],
+    "jointBorrower.property.current.city": [
+      {
+        "path": "joint_property_city"
+      }
+    ],
+    "jointBorrower.property.current.state": [
+      {
+        "path": "joint_property_state"
+      }
+    ],
+    "jointBorrower.property.current.zip": [
+      {
+        "path": "joint_property_zip"
+      }
+    ],
+    "jointBorrower.property.residencyInfo.livedMoreThan2Years": [
+      {
+        "path": "joint_lived_more_than_2_years"
+      }
+    ],
+    "jointBorrower.property.previous.city": [
+      {
+        "path": "joint_previous_city"
+      }
+    ],
+    "jointBorrower.property.previous.state": [
+      {
+        "path": "joint_previous_state"
+      }
+    ],
+    "jointBorrower.property.previous.zip": [
+      {
+        "path": "joint_previous_zip"
+      }
+    ]
+  }
+}

@@ -4,6 +4,86 @@ const path = require('path');
 // Cache for loaded configurations
 let configCache = null;
 let registryCache = null;
+let sharedFieldsCache = {};
+
+/**
+ * Load and resolve a shared field reference
+ * @param {string} refPath - The reference path (e.g., "../shared-fields/personal-info-fields.json#/first_name")
+ * @param {string} baseDir - The base directory for resolving relative paths
+ * @returns {Object|null} The resolved field definition
+ */
+function loadSharedField(refPath, baseDir) {
+  try {
+    const [filePath, fieldPath] = refPath.split('#');
+    const fullPath = path.resolve(baseDir, filePath);
+
+    // Load shared fields file if not cached
+    if (!sharedFieldsCache[fullPath]) {
+      if (!fs.existsSync(fullPath)) {
+        console.error(`Shared field file not found: ${fullPath}`);
+        return null;
+      }
+      const fieldData = fs.readFileSync(fullPath, 'utf8');
+      sharedFieldsCache[fullPath] = JSON.parse(fieldData);
+    }
+
+    // Navigate to specific field using fieldPath (e.g., "/first_name" or "/name/minLength")
+    const pathParts = fieldPath.substring(1).split('/'); // Remove leading "/" and split
+    let result = sharedFieldsCache[fullPath];
+
+    for (const part of pathParts) {
+      if (result && typeof result === 'object') {
+        result = result[part];
+      } else {
+        return null;
+      }
+    }
+
+    return result || null;
+  } catch (error) {
+    console.error(`Error loading shared field ${refPath}:`, error.message);
+    return null;
+  }
+}
+
+/**
+ * Recursively resolve field references in a configuration object
+ * @param {Object} obj - The configuration object to process
+ * @param {string} baseDir - The base directory for resolving relative paths
+ * @returns {Object} The object with resolved field references
+ */
+function resolveFieldReferences(obj, baseDir) {
+  if (Array.isArray(obj)) {
+    return obj.map(item => resolveFieldReferences(item, baseDir));
+  }
+
+  if (obj && typeof obj === 'object') {
+    // If this object has a $ref property, resolve it
+    if (obj.$ref) {
+      const sharedField = loadSharedField(obj.$ref, baseDir);
+      if (sharedField) {
+        // Merge shared field with any local overrides (excluding $ref)
+        const { $ref, ...localOverrides } = obj;
+        const merged = { ...sharedField, ...localOverrides };
+
+        // Recursively resolve any nested references in the merged object
+        return resolveFieldReferences(merged, baseDir);
+      } else {
+        console.warn(`Failed to resolve field reference: ${obj.$ref}`);
+        return obj; // Return original if reference fails
+      }
+    }
+
+    // Recursively process all object properties
+    const resolved = {};
+    for (const [key, value] of Object.entries(obj)) {
+      resolved[key] = resolveFieldReferences(value, baseDir);
+    }
+    return resolved;
+  }
+
+  return obj; // Return primitive values as-is
+}
 
 /**
  * Load all form configurations from JSON files
@@ -28,7 +108,13 @@ function loadConfigurations() {
       const configPath = path.join(formsJsonDir, form.file);
       if (fs.existsSync(configPath)) {
         const configData = fs.readFileSync(configPath, 'utf8');
-        configCache[form.id] = JSON.parse(configData);
+        let config = JSON.parse(configData);
+
+        // Resolve field references
+        const baseDir = path.dirname(configPath);
+        config = resolveFieldReferences(config, baseDir);
+
+        configCache[form.id] = config;
       }
     });
 
