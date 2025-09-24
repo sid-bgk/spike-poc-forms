@@ -7,12 +7,27 @@ import { Select } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import type { FormField as FormFieldType, FormFieldProps } from "./types"
 
-export function FormField({ field, value, onChange, onBlur, error, isValidating }: FormFieldProps) {
+export function FormField({ field, value, onChange, onBlur, error, isValidating, onAutoTrigger }: FormFieldProps) {
   // Ensure error is a string, not an object
   const errorMessage = typeof error === 'string' ? error : undefined
   const fieldId = `field-${field.id}`
 
   const normalizedType = String(field.type || '').toLowerCase()
+
+  // Helper function to handle field changes with auto-triggers
+  const handleChangeWithAutoTrigger = React.useCallback((newValue: any) => {
+    // First, update the current field value
+    onChange(newValue)
+
+    // Then check for auto-triggers (only on user interaction)
+    if (field.autoTriggers && onAutoTrigger) {
+      const trigger = field.autoTriggers[newValue]
+      if (trigger) {
+        // Execute the auto-trigger
+        onAutoTrigger(field.name, newValue, trigger.field, trigger.value)
+      }
+    }
+  }, [onChange, field, onAutoTrigger])
 
   const renderField = () => {
     switch (normalizedType) {
@@ -145,7 +160,7 @@ export function FormField({ field, value, onChange, onBlur, error, isValidating 
                   name={field.name}
                   value={option.value}
                   checked={value === option.value}
-                  onChange={(e) => onChange(e.target.value)}
+                  onChange={(e) => handleChangeWithAutoTrigger(e.target.value)}
                   onBlur={onBlur}
                   className="h-4 w-4 border-gray-300 text-primary focus:ring-2 focus:ring-primary"
                 />
@@ -168,7 +183,7 @@ export function FormField({ field, value, onChange, onBlur, error, isValidating 
             id={fieldId}
             name={field.name}
             value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => handleChangeWithAutoTrigger(e.target.value)}
             onBlur={onBlur}
             variant={errorMessage ? 'error' : 'default'}
             aria-describedby={errorMessage ? `${fieldId}-error` : undefined}

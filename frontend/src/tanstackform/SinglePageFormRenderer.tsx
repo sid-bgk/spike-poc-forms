@@ -71,6 +71,7 @@ export function SinglePageFormRenderer({ config, onSubmit, defaultValues = {}, c
                           onBlur={formField.handleBlur}
                           error={formField.state.meta.errors?.[0]}
                           isValidating={formField.state.meta.isValidating}
+                          onAutoTrigger={engine.handleAutoTrigger}
                         />
                       )}
                     </form.Field>

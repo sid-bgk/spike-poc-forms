@@ -70,13 +70,20 @@
         },
         {
           "id": "lien_Position",
-          "name": "Lien Position",
+          "name": "lien_Position",
+          "type": "radio",
+          "label": "Lien Position",
+          "required": true,
           "validation": [
             {
               "rule": "required",
-              "message": "Please enter the property city"
+              "message": "Please select the lien position"
             }
           ],
+          "autoTriggers": {
+            "firstLien": { "field": "mortgage_type", "value": "na" },
+            "secondLien": { "field": "mortgage_type", "value": "ces" }
+          },
           "options": [
             {
               "value": "firstLien",
@@ -86,17 +93,31 @@
               "value": "secondLien",
               "label": "Second Lien"
             }
-          ]
+          ],
+          "grid": {
+            "xs": 12,
+            "sm": 6
+          }
         },
         {
           "id": "mortgage_type",
-          "name": "Mortgage Type",
+          "name": "mortgage_type",
+          "type": "dropdown",
+          "label": "Mortgage Type",
+          "required": true,
           "validation": [
             {
               "rule": "required",
-              "message": "Please enter the property city"
+              "message": "Please select the mortgage type"
             }
           ],
+          "autoTriggers": {
+            "na": { "field": "lien_Position", "value": "firstLien" },
+            "fha": { "field": "lien_Position", "value": "firstLien" },
+            "va": { "field": "lien_Position", "value": "firstLien" },
+            "ces": { "field": "lien_Position", "value": "secondLien" },
+            "heloc": { "field": "lien_Position", "value": "secondLien" }
+          },
           "options": [
             {
               "value": "na",
@@ -118,7 +139,11 @@
               "value": "heloc",
               "label": "HELOC"
             }
-          ]
+          ],
+          "grid": {
+            "xs": 12,
+            "sm": 6
+          }
         }
       ]
     },

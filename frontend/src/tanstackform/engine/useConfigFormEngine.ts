@@ -440,6 +440,15 @@ export function useConfigFormEngine({
     [evaluateConditions, conditionKeySignature]
   );
 
+  // Handle auto-trigger functionality (unidirectional)
+  const handleAutoTrigger = React.useCallback(
+    (sourceField: string, sourceValue: any, targetField: string, targetValue: any) => {
+      // Set the target field value without triggering further auto-triggers
+      form.setFieldValue(targetField, targetValue, { shouldValidate: false })
+    },
+    [form]
+  );
+
   return {
     form,
     config,
@@ -463,5 +472,6 @@ export function useConfigFormEngine({
     saveStepData,
     isFieldVisible,
     stepNavigationProps,
+    handleAutoTrigger,
   };
 }

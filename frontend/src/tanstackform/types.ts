@@ -8,6 +8,7 @@ export interface FormField {
   helpText?: string
   validation?: Array<string | { [key: string]: any }>
   conditions?: any[]
+  autoTriggers?: Record<string, { field: string; value: string }>
   options?: Array<{
     value: string
     label: string
@@ -117,6 +118,7 @@ export interface FormFieldProps {
   onBlur: () => void
   error?: string
   isValidating?: boolean
+  onAutoTrigger?: (sourceField: string, sourceValue: any, targetField: string, targetValue: any) => void
 }
 
 export type FormData = Record<string, any>

@@ -79,6 +79,7 @@ export function ConfigFormRenderer({
                         onBlur={formField.handleBlur}
                         error={formField.state.meta.errors?.[0] || manualError}
                         isValidating={formField.state.meta.isValidating}
+                        onAutoTrigger={engine.handleAutoTrigger}
                       />
                     )
                   }}
