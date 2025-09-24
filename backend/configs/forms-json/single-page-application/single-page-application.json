@@ -1,17 +1,13 @@
 {
   "metadata": {
-    "id": "simplified-application-poc",
-    "name": "Simplified Loan Application POC",
+    "id": "single-page-application",
+    "name": "Single Page Application",
     "version": "1.0.0",
-    "description": "POC demonstrating centralized form configuration with conditional steps"
+    "description": "Standalone form rendered as a single page with sectioned steps"
   },
   "flowConfig": {
-    "type": "linear",
-    "navigation": "stepped"
-  },
-  "saveConfig": {
-    "enabled": true,
-    "saveOnStepComplete": true
+    "type": "single",
+    "navigation": "sections"
   },
   "steps": [
     {
@@ -22,102 +18,55 @@
       "required": true,
       "fields": [
         {
-          "id": "first_name",
-          "type": "text",
-          "name": "first_name",
-          "label": "First Name",
-          "required": true,
+          "$ref": "../../shared-fields/personal-info-fields.json#/first_name",
+          "label": "Given name",
           "validation": [
             {
-              "rule": "required",
-              "message": "Please enter your first name"
+              "$ref": "../../shared-fields/validation-rules.json#/required"
             },
             {
-              "rule": "minLength",
-              "value": 2,
-              "message": "First name must be at least 2 characters"
+              "$ref": "../../shared-fields/validation-rules.json#/name/minLength"
             },
             {
-              "rule": "maxLength",
-              "value": 50,
-              "message": "First name cannot exceed 50 characters"
+              "$ref": "../../shared-fields/validation-rules.json#/name/maxLength"
             }
-          ],
-          "grid": {
-            "xs": 12,
-            "sm": 6
-          },
-          "placeholder": "Enter your first name"
+          ]
         },
         {
-          "id": "last_name",
-          "type": "text",
-          "name": "last_name",
-          "label": "Last Name",
-          "required": true,
+          "$ref": "../../shared-fields/personal-info-fields.json#/last_name",
           "validation": [
             {
-              "rule": "required",
-              "message": "Please enter your last name"
+              "$ref": "../../shared-fields/validation-rules.json#/required"
             },
             {
-              "rule": "minLength",
-              "value": 2,
-              "message": "Last name must be at least 2 characters"
+              "$ref": "../../shared-fields/validation-rules.json#/name/minLength"
             },
             {
-              "rule": "maxLength",
-              "value": 50,
-              "message": "Last name cannot exceed 50 characters"
+              "$ref": "../../shared-fields/validation-rules.json#/name/maxLength"
             }
-          ],
-          "grid": {
-            "xs": 12,
-            "sm": 6
-          },
-          "placeholder": "Enter your last name"
+          ]
         },
         {
-          "id": "email",
-          "type": "email",
-          "name": "email",
-          "label": "Email Address",
-          "required": true,
+          "$ref": "../../shared-fields/personal-info-fields.json#/email",
           "validation": [
             {
-              "rule": "required",
-              "message": "Please enter your email address"
+              "$ref": "../../shared-fields/validation-rules.json#/required"
             },
             {
-              "rule": "email",
-              "message": "Please enter a valid email address"
+              "$ref": "../../shared-fields/validation-rules.json#/email"
             }
-          ],
-          "grid": {
-            "xs": 12
-          },
-          "placeholder": "Enter your email address"
+          ]
         },
         {
-          "id": "mobile",
-          "type": "phone",
-          "name": "mobile",
-          "label": "Mobile Number",
-          "required": true,
+          "$ref": "../../shared-fields/personal-info-fields.json#/mobile",
           "validation": [
             {
-              "rule": "required",
-              "message": "Please enter your phone number"
+              "$ref": "../../shared-fields/validation-rules.json#/required"
             },
             {
-              "rule": "phoneUS",
-              "message": "Please enter a valid US phone number"
+              "$ref": "../../shared-fields/validation-rules.json#/phoneUS"
             }
-          ],
-          "grid": {
-            "xs": 12
-          },
-          "placeholder": "(555) 123-4567"
+          ]
         }
       ]
     },
@@ -750,85 +699,5 @@
         "message": "Email and mobile must be unique across all applicants"
       }
     ]
-  },
-  "transformations": {
-    "inbound": {
-      "borrower.personal.firstName": "first_name",
-      "borrower.personal.lastName": "last_name",
-      "borrower.personal.email": "email",
-      "borrower.personal.mobile": "mobile",
-      "property.current.city": "property_city",
-      "property.current.state": "property_state",
-      "property.current.zip": "property_zip",
-      "property.residencyInfo.livedMoreThan2Years": "lived_more_than_2_years",
-      "property.previous.city": "previous_city",
-      "property.previous.state": "previous_state",
-      "property.previous.zip": "previous_zip",
-      "application.type": "application_type",
-      "jointBorrower.property.current.city": "joint_property_city",
-      "jointBorrower.property.current.state": "joint_property_state",
-      "jointBorrower.property.current.zip": "joint_property_zip",
-      "jointBorrower.property.residencyInfo.livedMoreThan2Years": "joint_lived_more_than_2_years",
-      "jointBorrower.property.previous.city": "joint_previous_city",
-      "jointBorrower.property.previous.state": "joint_previous_state",
-      "jointBorrower.property.previous.zip": "joint_previous_zip"
-    },
-    "outbound": {
-      "first_name": "borrower.personal.firstName",
-      "last_name": "borrower.personal.lastName",
-      "email": "borrower.personal.email",
-      "mobile": "borrower.personal.mobile",
-      "property_city": "property.current.city",
-      "property_state": "property.current.state",
-      "property_zip": "property.current.zip",
-      "lived_more_than_2_years": "property.residencyInfo.livedMoreThan2Years",
-      "previous_city": "property.previous.city",
-      "previous_state": "property.previous.state",
-      "previous_zip": "property.previous.zip",
-      "application_type": "application.type",
-      "joint_property_city": "jointBorrower.property.current.city",
-      "joint_property_state": "jointBorrower.property.current.state",
-      "joint_property_zip": "jointBorrower.property.current.zip",
-      "joint_lived_more_than_2_years": "jointBorrower.property.residencyInfo.livedMoreThan2Years",
-      "joint_previous_city": "jointBorrower.property.previous.city",
-      "joint_previous_state": "jointBorrower.property.previous.state",
-      "joint_previous_zip": "jointBorrower.property.previous.zip"
-    },
-    "advanced": {
-      "arrayFieldPatterns": {
-        "borrowers[].personal.firstName": [
-          {
-            "path": "borrowers",
-            "type": "arrayField",
-            "field": "firstName"
-          }
-        ],
-        "borrowers[].personal.lastName": [
-          {
-            "path": "borrowers",
-            "type": "arrayField",
-            "field": "lastName"
-          }
-        ]
-      },
-      "conditionalPatterns": {
-        "first_name": [
-          {
-            "path": "primaryBorrower.firstName",
-            "condition": "notEmpty"
-          },
-          {
-            "path": "applicant.firstName",
-            "condition": "notEmpty"
-          },
-          {
-            "default": ""
-          }
-        ]
-      },
-      "complexPaths": {
-        "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers": "borrowers"
-      }
-    }
   }
 }

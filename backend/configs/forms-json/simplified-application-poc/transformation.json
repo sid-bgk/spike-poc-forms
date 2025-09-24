@@ -1,0 +1,80 @@
+{
+  "inbound": {
+    "borrower.personal.firstName": "first_name",
+    "borrower.personal.lastName": "last_name",
+    "borrower.personal.email": "email",
+    "borrower.personal.mobile": "mobile",
+    "property.current.city": "property_city",
+    "property.current.state": "property_state",
+    "property.current.zip": "property_zip",
+    "property.residencyInfo.livedMoreThan2Years": "lived_more_than_2_years",
+    "property.previous.city": "previous_city",
+    "property.previous.state": "previous_state",
+    "property.previous.zip": "previous_zip",
+    "application.type": "application_type",
+    "jointBorrower.property.current.city": "joint_property_city",
+    "jointBorrower.property.current.state": "joint_property_state",
+    "jointBorrower.property.current.zip": "joint_property_zip",
+    "jointBorrower.property.residencyInfo.livedMoreThan2Years": "joint_lived_more_than_2_years",
+    "jointBorrower.property.previous.city": "joint_previous_city",
+    "jointBorrower.property.previous.state": "joint_previous_state",
+    "jointBorrower.property.previous.zip": "joint_previous_zip"
+  },
+  "outbound": {
+    "first_name": "borrower.personal.firstName",
+    "last_name": "borrower.personal.lastName",
+    "email": "borrower.personal.email",
+    "mobile": "borrower.personal.mobile",
+    "property_city": "property.current.city",
+    "property_state": "property.current.state",
+    "property_zip": "property.current.zip",
+    "lived_more_than_2_years": "property.residencyInfo.livedMoreThan2Years",
+    "previous_city": "property.previous.city",
+    "previous_state": "property.previous.state",
+    "previous_zip": "property.previous.zip",
+    "application_type": "application.type",
+    "joint_property_city": "jointBorrower.property.current.city",
+    "joint_property_state": "jointBorrower.property.current.state",
+    "joint_property_zip": "jointBorrower.property.current.zip",
+    "joint_lived_more_than_2_years": "jointBorrower.property.residencyInfo.livedMoreThan2Years",
+    "joint_previous_city": "jointBorrower.property.previous.city",
+    "joint_previous_state": "jointBorrower.property.previous.state",
+    "joint_previous_zip": "jointBorrower.property.previous.zip"
+  },
+  "advanced": {
+    "arrayFieldPatterns": {
+      "borrowers[].personal.firstName": [
+        {
+          "path": "borrowers",
+          "type": "arrayField",
+          "field": "firstName"
+        }
+      ],
+      "borrowers[].personal.lastName": [
+        {
+          "path": "borrowers",
+          "type": "arrayField",
+          "field": "lastName"
+        }
+      ]
+    },
+    "conditionalPatterns": {
+      "first_name": [
+        {
+          "path": "primaryBorrower.firstName",
+          "condition": "notEmpty"
+        },
+        {
+          "path": "applicant.firstName",
+          "condition": "notEmpty"
+        },
+        {
+          "default": ""
+        }
+      ]
+    },
+    "complexPaths": {
+      "loanData.DEAL.EXTENSION.OTHER['saaf:DEAL_EXTENSION']['saaf:ApplicationData'].borrowers": "borrowers"
+    }
+  }
+}

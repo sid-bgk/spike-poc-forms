@@ -1,0 +1,48 @@
+{
+  "first_name": {
+    "id": "first_name",
+    "type": "text",
+    "name": "first_name",
+    "label": "First Name",
+    "required": true,
+    "grid": {
+      "xs": 12,
+      "sm": 6
+    },
+    "placeholder": "Enter your first name"
+  },
+  "last_name": {
+    "id": "last_name",
+    "type": "text",
+    "name": "last_name",
+    "label": "Last Name",
+    "required": true,
+    "grid": {
+      "xs": 12,
+      "sm": 6
+    },
+    "placeholder": "Enter your last name"
+  },
+  "email": {
+    "id": "email",
+    "type": "email",
+    "name": "email",
+    "label": "Email Address",
+    "required": true,
+    "grid": {
+      "xs": 12
+    },
+    "placeholder": "Enter your email address"
+  },
+  "mobile": {
+    "id": "mobile",
+    "type": "phone",
+    "name": "mobile",
+    "label": "Mobile Number",
+    "required": true,
+    "grid": {
+      "xs": 12
+    },
+    "placeholder": "(555) 123-4567"
+  }
+}
